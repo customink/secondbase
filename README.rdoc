@@ -1,6 +1,8 @@
 = secondbase
 
-Description goes here.
+SecondBase adds a second database to your application.  While Rails enables you to establish connections to as many external databases as you like, Rails can only manage a single database with it's migration and testing tasks.
+
+Secondbase enables Rails to work with, and manage, a second database (almost) transparently.  As a developer, you should not even realize a second database is in play.  Core rake tasks such as db:create, db:migrate, and test will continue to work seamlessly with both databases without you, the developer, having to run any extra rake tasks.
 
 == Contributing to secondbase
  
@@ -11,6 +13,90 @@ Description goes here.
 * Commit and push until you are happy with your contribution
 * Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+
+== System Requirements
+Secondbase requires Rails 3.x.  This is mainly because it was easier to include the rake tasks into your Rails application root.  With that being said, it would not be hard to port this to Rails 2.x, you simply need to manually modify your Rakefile to require 'secondbase/tasks'.  
+
+If you have the time to update this gem to be backward compatible, by all means...
+
+
+== Installation
+Modify your Gemfile to include Secondbase:
+  
+  gem 'secondbase', '0.1.0'
+
+Run `bundle install`.  You thought it would be harder?
+
+== Usage
+=== Database
+- setting up database.yml
+
+
+=== Migrations
+SecondBase comes with a generator to assist in managing your migrations
+ 
+  rails generator secondbase:migration CreateWidgetsTable
+
+The generator will organize your second (data)base migrations alongside of your primary database.  The above command will generate the file:
+
+  db/migrate/secondbase/20101203211338_create_widgets_table.rb
+  
+To run your migrations, simply run:
+
+  rake db:migrate
+  
+This will migrate your first and second (data)bases.  If, for some reason, you only want to migrate your second (data)base, run:
+
+  rake db:migrate:secondbase
+  
+Please note that migrating up and migrating down must be done specifically on your first or second (data)base.  As usual, to migrate your first (data)base up or down to version 20101203211338, you could run:
+
+  rake db:migrate:up VERSION=20101005311335
+  rake db:migrate:down VERSION=20101005311335
+
+To migrate your second (data)base up or down to version 20101203211338, you would run:
+
+  rake db:migrate:up:secondbase VERSION=20101203211338
+  rake db:migrate:down:secondbase VERSION=20101203211338
+
+
+=== Models
+Every model in your project that extends ActiveRecord::Base will point to the database defined by Rails.env.  This is the default Rails behavior and should be of no surprise to you.  So how do we point our models to the second (data)base?
+
+SecondBase offers a base model that you can simply extend:
+  
+  require 'secondbase/model'
+  
+  class Widget < SecondBase::Base
+    # you're Widget model is now pointing to your second (data)base table 'widgets'
+  end
+
+=== Rake Tasks & Custom Classes
+If you need to write rake tasks, or some other code that does not extend ActiveRecord, you can simply establish a connection to your second (data)base:
+
+  SecondBase::has_runner(Rails.env)
+  
+Please note that this is equivalent to using ActiveRecord::Base.establish_connection(config) and will reset the base connection of your ENTIRE application.  No worries, to move the runner back to first you can use:
+
+  FirstBase::has_runner(Rails.env)
+
+=== Testing
+Tests can still be run using `rake test` or `rake test:units`, etc.  However, if you are using fixtures, you will need to update your TestHelper class to include:
+
+  require 'secondbase/fixtures'
+  
+This is patch to fixtures that will identify the fixtures which belong to models that extend SecondBase::Base.  The patch will then ensure that the table descendants of SecondBase::Base get loaded into your second test (data)base.
+
+At this time, there is not support for anything other than fixtures (i.e. factories).  If you have the time to update this gem to be test object compatible, by all means...
+
+== TODO
+- We should support Rails 2.x as well as 3.x 
+
+- Migration generator needs support for attribute generation (similar to rails generate migration).  For example:
+  `rails generate secondbase_migration AddTitleBodyToPost title:string body:text published:boolean`
+
+- secondbase should provide support for testing objects other then fixtures
+
 
 == Copyright
 

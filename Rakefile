@@ -15,8 +15,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "secondbase"
   gem.homepage = "http://github.com/karledurante/secondbase"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{Allow Rails manage second database in your projects}
+  gem.description = %Q{Secondbase provides support to Rails to create a homogeneous for a dual database project.  Using the rake tasks already familiar to you, this gem enables Rails to work with two primary databases, instead of just one.}
   gem.email = "kdurante@customink.com"
   gem.authors = ["karledurante"]
   # Include your dependencies below. Runtime dependencies are required when using your gem,
