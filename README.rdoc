@@ -95,8 +95,11 @@ At this time, there is not support for anything other than fixtures (i.e. factor
 - Migration generator needs support for attribute generation (similar to rails generate migration).  For example:
   `rails generate secondbase_migration AddTitleBodyToPost title:string body:text published:boolean`
 
+- rake db:fixtures:load is currently broken.  Like many other things I have fixed, it assumes you only one a single database and attempts to load all fixtures into it.  I don't believe we can get away with alias chaining this one, I think (like the Fixtures class), we'll have to freedom patch it.
+
 - secondbase should provide support for testing objects other then fixtures
 
+- TESTS!!  Not 100% sure how to test the rake tasks, but I can definitely write tests for the classes and generators. I did this in my spare time, sorry...
 
 == Copyright
 

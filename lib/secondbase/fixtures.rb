@@ -1,3 +1,5 @@
+require 'secondbase/model'
+
 ###########################
 # Monkey patch Fixtures
 # Fixtures needs to load fixtures into the database defined by the parent class!
@@ -8,37 +10,38 @@
 class Fixtures
   def self.create_fixtures(fixtures_directory, table_names, class_names = {})
     table_names = [table_names].flatten.map { |n| n.to_s }
+    table_names.each { |n| class_names[n.tr('/', '_').to_sym] = n.classify if n.include?('/') }
     connection  = block_given? ? yield : ActiveRecord::Base.connection
     
-    sb_table_names = Object.subclasses_of(SecondBase::Base).map(&:table_name)
-    sb_connection = SecondBase::Base.connection
+    # make sure we only load secondbase tables that have fixtures defined...
+    sb_table_names = SecondBase::Base.send(:descendants).map(&:table_name)
+    sb_table_names = sb_table_names & table_names
+    sb_connection = SecondBase::Base.connection                          
     
+    # filter out the secondbase tables from firstbase, otherwise we'll get SQL errors...
     table_names_to_fetch = table_names.reject { |table_name| fixture_is_cached?(connection, table_name) || sb_table_names.include?(table_name) }
-    sb_table_names_to_fetch = sb_table_names.reject { |table_name| fixture_is_cached?(sb_connection, table_name) }
+    fixtures = process_fixture_table_names(table_names_to_fetch, class_names, connection, fixtures_directory)
+    fixtures = [fixtures] if !fixtures.instance_of?(Array)
     
+    sb_table_names_to_fetch = sb_table_names.reject { |table_name| fixture_is_cached?(sb_connection, table_name)}
+    sb_fixtures = process_fixture_table_names(sb_table_names_to_fetch, class_names, sb_connection, fixtures_directory)
+    sb_fixtures = [sb_fixtures] if !sb_fixtures.instance_of?(Array)
     
-    all_fixtures = []
-    reg_fixtures = process_fixture_table_names(table_names_to_fetch, class_names, connection, fixtures_directory) 
-    sb_fixtures = process_fixture_table_names(sb_table_names_to_fetch, class_names, sb_connection, fixtures_directory) 
-    
-    # TODO:  for some reason, sb_fixtures are getting stored as an array with the fixture name.
-    #        so we have to flatten them and reject non-fixtures objects...
-    sb_fixtures.try(:flatten!)
-    sb_fixtures.reject! {|f| !f.instance_of?(Fixtures)} unless sb_fixtures.blank?
-    
-    reg_fixtures + (sb_fixtures || [] )
+    (fixtures + sb_fixtures).compact
   end
   
-  def self.process_fixture_table_names(table_names_to_fetch, class_names, connection, fixtures_directory) 
+  def self.process_fixture_table_names(table_names_to_fetch, class_names, connection, fixtures_directory)
+    fixtures_map = {}
     unless table_names_to_fetch.empty?
       ActiveRecord::Base.silence do
         connection.disable_referential_integrity do
-          fixtures_map = {}
+          # fixtures_map = {}
 
           fixtures = table_names_to_fetch.map do |table_name|
-            fixtures_map[table_name] = Fixtures.new(connection, File.split(table_name.to_s).last, class_names[table_name.to_sym], File.join(fixtures_directory, table_name.to_s))
+            obj = Fixtures.new(connection, table_name.tr('/', '_'), class_names[table_name.tr('/', '_').to_sym], File.join(fixtures_directory, table_name))
+            fixtures_map[table_name] = obj
           end
-          
+
           all_loaded_fixtures.update(fixtures_map)
 
           connection.transaction(:requires_new => true) do
@@ -47,8 +50,8 @@ class Fixtures
 
             # Cap primary key sequences to max(pk).
             if connection.respond_to?(:reset_pk_sequence!)
-              table_names.each do |table_name|
-                connection.reset_pk_sequence!(table_name)
+              table_names_to_fetch.each do |table_name|
+                connection.reset_pk_sequence!(table_name.tr('/', '_'))
               end
             end
           end
