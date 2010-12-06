@@ -29,7 +29,30 @@ Run `bundle install`.  You thought it would be harder?
 
 == Usage
 === Database
-- setting up database.yml
+Configure your database.yml to define your secondbase:
+
+  # Your normal rails definitions...
+  development:
+    adapter: mysql  #postgres, oracle, etc
+    encoding: utf8
+    database: development
+  
+  test:
+    adapter: mysql  #postgres, oracle, etc
+    encoding: utf8
+    database: test
+      
+  # Your secondbase database configurations...
+  secondbase:
+    development:
+      adapter: mysql
+      encoding: utf8
+      database: secondbase_development
+
+    test:
+      adapter: mysql
+      encoding: utf8
+      database: secondbase_test
 
 
 === Migrations
