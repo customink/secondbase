@@ -20,7 +20,6 @@ Secondbase now supports Rails 2.x and Rails 3.x.
 == Known Issues
 - The custom migration generator does not work in Rails 2.x.  The work around for the time being is to use the normal migration generator provided in Rails 2.x, and then move the migration to db/migrate/secondbase:
 
-  # creates file db/migrate/20101203211338_create_widgets_table.rb
   ./script/generate migration CreateWidgetsTable
   mv db/migrate/20101203211338_create_widgets_table.rb db/migrate/secondbase
 
