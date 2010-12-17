@@ -15,9 +15,7 @@ Secondbase enables Rails to work with, and manage, a second database (almost) tr
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
 
 == System Requirements
-Secondbase requires Rails 3.x.  This is mainly because it was easier to include the rake tasks into your Rails application root.  With that being said, it would not be hard to port this to Rails 2.x, you simply need to manually modify your Rakefile to require 'secondbase/tasks'.  
-
-If you have the time to update this gem to be backward compatible, by all means...
+Secondbase now supports Rails 2.x and Rails 3.x.
 
 
 == Installation
