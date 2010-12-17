@@ -4,7 +4,7 @@ module SecondBase
   class Railtie < Rails::Railtie
 
     rake_tasks do
-      load "tasks.rb"
+      load "secondbase/tasks.rb"
     end
   end
 end
