@@ -23,9 +23,11 @@ If you have the time to update this gem to be backward compatible, by all means.
 == Installation
 Modify your Gemfile to include Secondbase:
   
-  gem 'secondbase', '0.1.0'
+  gem 'secondbase', '0.3.0'
 
-Run `bundle install`.  You thought it would be harder?
+Run `bundle install`.  You thought it would be harder?  If you're using Rails 2.x, then yes, a little bit harder.  You must also add this to your Rakefile:
+
+  require 'secondbase/tasks'
 
 == Usage
 === Database
@@ -113,8 +115,6 @@ This is patch to fixtures that will identify the fixtures which belong to models
 At this time, there is not support for anything other than fixtures (i.e. factories).  If you have the time to update this gem to be test object compatible, by all means...
 
 == TODO
-- We should support Rails 2.x as well as 3.x 
-
 - Migration generator needs support for attribute generation (similar to rails generate migration).  For example:
   `rails generate secondbase_migration AddTitleBodyToPost title:string body:text published:boolean`
 

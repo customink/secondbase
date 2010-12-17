@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{secondbase}
-  s.version = "0.2.0"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["karledurante"]
-  s.date = %q{2010-12-06}
+  s.date = %q{2010-12-17}
   s.description = %q{Secondbase provides support to Rails to create a homogeneous for a dual database project.  Using the rake tasks already familiar to you, this gem enables Rails to work with two primary databases, instead of just one.}
   s.email = %q{kdurante@customink.com}
   s.extra_rdoc_files = [
@@ -32,7 +32,8 @@ Gem::Specification.new do |s|
     "lib/secondbase/model.rb",
     "lib/secondbase/railtie.rb",
     "lib/secondbase/rake_method_chain.rb",
-    "lib/tasks/secondbase.rake",
+    "lib/secondbase/tasks.rb",
+    "secondbase.gemspec",
     "test/helper.rb",
     "test/test_secondbase.rb"
   ]
