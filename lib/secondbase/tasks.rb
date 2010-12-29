@@ -161,7 +161,7 @@ namespace :db do
 
         # now lets clone the structure for secondbase
         use_secondbase('test')
-        ActiveRecord::Base.connection.execute('SET foreign_key_checks = 0')
+        ActiveRecord::Base.connection.execute('SET foreign_key_checks = 0') if secondbase_config(RAILS_ENV)['adapter'][/mysql/]
         IO.readlines("#{RAILS_ROOT}/db/#{SecondBase::CONNECTION_PREFIX}_#{RAILS_ENV}_structure.sql").join.split("\n\n").each do |table|
           ActiveRecord::Base.connection.execute(table)
         end
