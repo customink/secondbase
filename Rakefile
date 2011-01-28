@@ -19,6 +19,7 @@ Jeweler::Tasks.new do |gem|
   gem.description = %Q{Secondbase provides support to Rails to create a homogeneous for a dual database project.  Using the rake tasks already familiar to you, this gem enables Rails to work with two primary databases, instead of just one.}
   gem.email = "kdurante@customink.com"
   gem.authors = ["karledurante"]
+  gem.add_development_dependency 'activerecord', '~> 3.0.0'
   # Include your dependencies below. Runtime dependencies are required when using your gem,
   # and development dependencies are only needed for development (ie running rake tasks, tests, etc)
   #  gem.add_runtime_dependency 'jabber4r', '> 0.1'

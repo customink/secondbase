@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{secondbase}
-  s.version = "0.3.2"
+  s.version = "0.3.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["karledurante"]
-  s.date = %q{2010-12-29}
+  s.date = %q{2011-01-28}
   s.description = %q{Secondbase provides support to Rails to create a homogeneous for a dual database project.  Using the rake tasks already familiar to you, this gem enables Rails to work with two primary databases, instead of just one.}
   s.email = %q{kdurante@customink.com}
   s.extra_rdoc_files = [
@@ -33,6 +33,9 @@ Gem::Specification.new do |s|
     "lib/secondbase/railtie.rb",
     "lib/secondbase/rake_method_chain.rb",
     "lib/secondbase/tasks.rb",
+    "rails_generators/secondbase/USAGE",
+    "rails_generators/secondbase/secondbase_migration_generator.rb",
+    "rails_generators/secondbase/templates/migration.rb",
     "secondbase.gemspec",
     "test/helper.rb",
     "test/test_secondbase.rb"
@@ -56,16 +59,19 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.1"])
       s.add_development_dependency(%q<activerecord>, ["~> 3.0.0"])
+      s.add_development_dependency(%q<activerecord>, ["~> 3.0.0"])
     else
       s.add_dependency(%q<shoulda>, [">= 0"])
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.1"])
+      s.add_dependency(%q<activerecord>, ["~> 3.0.0"])
       s.add_dependency(%q<activerecord>, ["~> 3.0.0"])
     end
   else
     s.add_dependency(%q<shoulda>, [">= 0"])
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.1"])
+    s.add_dependency(%q<activerecord>, ["~> 3.0.0"])
     s.add_dependency(%q<activerecord>, ["~> 3.0.0"])
   end
 end
