@@ -61,7 +61,7 @@ Rails 3.x:
   rails generator secondbase:migration CreateWidgetsTable
 
 Rails 2.x:
-  rails generator secondbase_migration CreateWidgetsTable
+  script/generate secondbase_migration CreateWidgetsTable
     
 The generator will organize your second (data)base migrations alongside of your primary database.  The above command will generate the file:
 
