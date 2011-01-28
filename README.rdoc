@@ -15,7 +15,7 @@ Secondbase enables Rails to work with, and manage, a second database (almost) tr
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
 
 == System Requirements
-Secondbase *now supports Rails 2.x* and Rails 3.x.
+Secondbase now supports Rails 2.x and Rails 3.x.
 
 == Installation
 Modify your Gemfile to include Secondbase:
@@ -24,7 +24,7 @@ Modify your Gemfile to include Secondbase:
 
 Run `bundle install`.  You thought it would be harder?  If you're using Rails 2.x, then yes, a little bit harder.  You must also add this to your Rakefile:
 
-  require 'secondbase/tasks'
+  require 'secondbase/tasks' if defined?(Secondbase)
 
 == Usage
 === Database
@@ -57,10 +57,10 @@ Configure your database.yml to define your secondbase:
 === Migrations
 SecondBase comes with a generator to assist in managing your migrations
 
-*Rails 3.x* 
+Rails 3.x:
   rails generator secondbase:migration CreateWidgetsTable
 
-*Rails 2.x* 
+Rails 2.x:
   rails generator secondbase_migration CreateWidgetsTable
     
 The generator will organize your second (data)base migrations alongside of your primary database.  The above command will generate the file:
