@@ -1,4 +1,5 @@
 require 'secondbase'
+
 ####################################
 #                                  
 # SecondBase database managment tasks  
@@ -60,14 +61,14 @@ namespace :db do
       # in a dual db mode, it could be confusing to have two schemas.
       
       # reset connection to secondbase...
-      use_secondbase(Rails.env)
+      SecondBase::has_runner(Rails.env)
       
       # run secondbase migrations...
       ActiveRecord::Migration.verbose = ENV["VERBOSE"] ? ENV["VERBOSE"] == "true" : true
       ActiveRecord::Migrator.migrate("db/migrate/#{SecondBase::CONNECTION_PREFIX}/", ENV["VERSION"] ? ENV["VERSION"].to_i : nil)
       
       # reset connection back to firstbase...
-      use_firstbase(Rails.env)
+      FirstBase::has_runner(Rails.env)
     end
     
     namespace :up do
@@ -77,12 +78,12 @@ namespace :db do
         raise "VERSION is required" unless version
         
         # reset connection to secondbase...
-        use_secondbase(Rails.env)
+        SecondBase::has_runner(Rails.env)
         
         ActiveRecord::Migrator.run(:up, "db/migrate/#{SecondBase::CONNECTION_PREFIX}/", version)
         
         # reset connection back to firstbase...
-        use_firstbase(Rails.env)
+        FirstBase::has_runner(Rails.env)
       end
     end
     
@@ -93,12 +94,12 @@ namespace :db do
         raise "VERSION is required" unless version
         
         # reset connection to secondbase...
-        use_secondbase(Rails.env)
+        SecondBase::has_runner(Rails.env)
         
         ActiveRecord::Migrator.run(:down, "db/migrate/#{SecondBase::CONNECTION_PREFIX}/", version)
         
         # reset connection back to firstbase...
-        use_firstbase(Rails.env)
+        FirstBase::has_runner(Rails.env)
       end
     end
   end
@@ -119,14 +120,20 @@ namespace :db do
       task :secondbase do
         Rake::Task['environment'].invoke
         
-        # we want to dump the development (second)database....
-        use_secondbase('development')
+        SecondBase::has_runner(Rails.env)
         
-        File.open("#{RAILS_ROOT}/db/#{SecondBase::CONNECTION_PREFIX}_#{RAILS_ENV}_structure.sql", "w+") do |f| 
+        # dump the current env's db, be sure to add the schema information!!!
+        dump_file = "#{RAILS_ROOT}/db/#{SecondBase::CONNECTION_PREFIX}_#{RAILS_ENV}_structure.sql"
+        
+        File.open(dump_file, "w+") do |f| 
           f << ActiveRecord::Base.connection.structure_dump
         end
         
-        use_firstbase(Rails.env)
+        if ActiveRecord::Base.connection.supports_migrations?
+          File.open(dump_file, "a") { |f| f << ActiveRecord::Base.connection.dump_schema_information }
+        end
+        
+        FirstBase::has_runner(Rails.env)
       end 
     end
   end
@@ -143,11 +150,11 @@ namespace :db do
       task :secondbase do
         Rake::Task['environment'].invoke    
         
-        use_secondbase('test')
+        SecondBase::has_runner('test')
         
         ActiveRecord::Base.connection.recreate_database(secondbase_config('test')["database"], secondbase_config('test')) 
         
-        use_firstbase(Rails.env)
+        FirstBase::has_runner(Rails.env)
       end
     end
 
@@ -160,13 +167,15 @@ namespace :db do
         `rake db:test:purge:secondbase`
 
         # now lets clone the structure for secondbase
-        use_secondbase('test')
+        SecondBase::has_runner('test')
+        
         ActiveRecord::Base.connection.execute('SET foreign_key_checks = 0') if secondbase_config(RAILS_ENV)['adapter'][/mysql/]
+        
         IO.readlines("#{RAILS_ROOT}/db/#{SecondBase::CONNECTION_PREFIX}_#{RAILS_ENV}_structure.sql").join.split("\n\n").each do |table|
           ActiveRecord::Base.connection.execute(table)
         end
         
-        use_firstbase(Rails.env)
+        FirstBase::has_runner(Rails.env)
       end
     end
   end
@@ -177,18 +186,6 @@ end
 ####################################
 # 
 # Some helper methods to run back and forth between first and second base.
-def use_firstbase(env)
-  ActiveRecord::Base.establish_connection(firstbase_config(env))
-end
-
-def use_secondbase(env)
-  ActiveRecord::Base.establish_connection(secondbase_config(env))
-end
-
 def secondbase_config(env)
   ActiveRecord::Base.configurations[SecondBase::CONNECTION_PREFIX][env]
-end
-
-def firstbase_config(env)
-  ActiveRecord::Base.configurations[env]
 end
