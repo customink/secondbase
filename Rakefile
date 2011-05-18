@@ -16,7 +16,7 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "http://github.com/karledurante/secondbase"
   gem.license = "MIT"
   gem.summary = %Q{Allow Rails manage second database in your projects}
-  gem.description = %Q{Secondbase provides support to Rails to create a homogeneous for a dual database project.  Using the rake tasks already familiar to you, this gem enables Rails to work with two primary databases, instead of just one.}
+  gem.description = %Q{Secondbase provides support to Rails to create a homogeneous environment for a dual database project.  Using the rake tasks already familiar to you, this gem enables Rails to work with two primary databases, instead of just one.}
   gem.email = "kdurante@customink.com"
   gem.authors = ["karledurante"]
   gem.add_development_dependency 'activerecord', '~> 3.0.0'

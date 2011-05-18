@@ -39,6 +39,13 @@ namespace :db do
     Rake::Task["db:migrate:original"].invoke
   end
   
+  override_task :abort_if_pending_migrations do  
+    # Execute the original/default prepare task 
+    Rake::Task["db:abort_if_pending_migrations"].invoke
+    
+    Rake::Task["db:abort_if_pending_migrations:secondbase"].invoke
+  end
+  
   namespace :test do
     override_task :prepare do
       Rake::Task['environment'].invoke
@@ -53,6 +60,29 @@ namespace :db do
   
   ##################################
   # SecondBase specific database tasks 
+  namespace :abort_if_pending_migrations do
+    desc "determines if your secondbase has pending migrations"
+    task :secondbase => :environment do
+      # reset connection to secondbase...
+      SecondBase::has_runner(Rails.env)
+      
+      pending_migrations = ActiveRecord::Migrator.new(:up, "db/migrate/#{SecondBase::CONNECTION_PREFIX}").pending_migrations
+
+      if pending_migrations.any?
+        puts "You have #{pending_migrations.size} pending migrations:"
+        pending_migrations.each do |pending_migration|
+          puts '  %4d %s' % [pending_migration.version, pending_migration.name]
+        end
+        abort %{Run "rake db:migrate" to update your database then try again.}
+      else
+        puts "\n\n No pending migrations! \n\n"
+      end
+      
+      # reset connection back to firstbase...
+      FirstBase::has_runner(Rails.env)
+    end
+  end
+  
   namespace :migrate do
     desc "migrates the second database"
     task :secondbase => :load_config do
@@ -141,7 +171,7 @@ namespace :db do
   namespace :test do
     namespace :prepare do
       desc 'Prepares the test instance of secondbase'
-      task :secondbase do
+      task :secondbase => 'db:abort_if_pending_migrations:secondbase' do
         Rake::Task["db:test:clone_structure:secondbase"].invoke
       end
     end
