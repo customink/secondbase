@@ -74,8 +74,6 @@ namespace :db do
           puts '  %4d %s' % [pending_migration.version, pending_migration.name]
         end
         abort %{Run "rake db:migrate" to update your database then try again.}
-      else
-        puts "\n\n No pending migrations! \n\n"
       end
       
       # reset connection back to firstbase...
