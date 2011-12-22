@@ -29,9 +29,7 @@ module Secondbase
     private 
     # TODO: We need to add support for name/value pairs like title:string dob:date etc..
     def get_local_assigns
-      returning(assigns = {}) do
-        assigns[:class_name] = class_name
-      end
+      { :class_name => class_name }
     end
         
   end
