@@ -1,10 +1,12 @@
 = secondbase
 
-Secondbase adds a second database to your application.  While Rails enables you to establish connections to as many external databases as you like, Rails can only manage a single database with it's migration and testing tasks.
+SecondBase adds a second database to your application.  While Rails enables you to establish connections to as many external databases as you like, Rails can only manage a single database with it's migration and testing tasks.
 
-Secondbase enables Rails to work with, and manage, a second database (almost) transparently.  As a developer, you should not even realize a second database is in play.  Core rake tasks such as db:create, db:migrate, and test will continue to work seamlessly with both databases without you, the developer, having to run any extra rake tasks.
+SecondBase enables Rails to work with, and manage, a second database (almost) transparently.  As a developer, you should not even realize a second database is in play.  Core rake tasks such as rake db:create, rake db:migrate, and rake test will continue to work seamlessly with both databases without you, the developer, having to run any extra rake tasks.
 
-== Contributing to Secondbase
+SecondBase works with Rails 2.3.x and 3.0.x.  I've not tried to use SecondBase with Rails 3.1 yet, although someone has submitted a pull request fixing a 3.1 issue, so I assume it's working OK?
+
+== Contributing to SecondBase
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
@@ -15,16 +17,16 @@ Secondbase enables Rails to work with, and manage, a second database (almost) tr
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
 
 == System Requirements
-Secondbase now supports Rails 2.x and Rails 3.x.
+SecondBase now supports Rails 2.x and Rails 3.x.
 
 == Installation
-Modify your Gemfile to include Secondbase:
+Modify your Gemfile to include SecondBase:
   
-  gem 'secondbase', '0.4.0'
+  gem 'secondbase', '0.5.0'
 
 Run `bundle install`.  You thought it would be harder?  If you're using Rails 2.x, then yes, a little bit harder.  You must also add this to your Rakefile:
 
-  require 'secondbase/tasks' if defined?(Secondbase)
+  require 'secondbase/tasks' if defined?(SecondBase)
 
 PLEASE NOTE that if you are using bundler with Rails 2.x, then you simply need to add this to your Rakefile:
 
@@ -32,7 +34,7 @@ PLEASE NOTE that if you are using bundler with Rails 2.x, then you simply need t
   
 == Usage
 === Database
-Configure your database.yml to define your Secondbase:
+Configure your database.yml to define your SecondBase:
 
   # Your normal rails definitions...
   development:
@@ -101,7 +103,7 @@ SecondBase offers a base model that you can simply extend:
     # you're Widget model is now pointing to your second (data)base table 'widgets'
   end
 
-ActiveRecord associations will still work between your Firstbase and Secondbase models!
+ActiveRecord associations will still work between your Firstbase and SecondBase models!
 
   # Notice how normal this all looks...
   class User < ActiveRecord::Base
@@ -124,15 +126,13 @@ Tests can still be run using `rake test` or `rake test:units`, etc.  However, if
   
 This is patch to fixtures that will identify the fixtures which belong to models that extend SecondBase::Base.  The patch will then ensure that the table descendants of SecondBase::Base get loaded into your second test (data)base.
 
-At this time, I can verify that Secondbase works with Fixtures and Machinist.  Conceivably, other test factories should work (like Factory Girl), but there is currently no support for this.  If you have the time to update this gem to be test object compatible, by all means...
+At this time, I can verify that SecondBase works with Fixtures, Machinist and FactoryGirl.  Conceivably, other test factories should work, but there is currently no support for this.  If you have the time to update this gem to be test object compatible, by all means...
 
 == TODO
 - Migration generator in Rails 3.x needs support for attribute generation (similar to rails generate migration).  For example:
   `rails generate secondbase:migration AddTitleBodyToPost title:string body:text published:boolean`
 
 - rake db:fixtures:load is currently broken.  Like many other things I have fixed, it assumes you only one a single database and attempts to load all fixtures into it.  I don't believe we can get away with alias chaining this one, I think (like the Fixtures class), we'll have to freedom patch it.
-
-- secondbase needs to be tested with other factory frameworks (other then Fixtures and Machinist)
 
 - TESTS!!  Not 100% sure how to test the rake tasks, but I can definitely write tests for the classes and generators. I did this in my spare time, sorry...
 
