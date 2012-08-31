@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     ".document",
+    "CHANGELOG.md",
     "Gemfile",
     "Gemfile.lock",
     "LICENSE.txt",
@@ -28,6 +29,11 @@ Gem::Specification.new do |s|
     "lib/generators/secondbase/migration_generator.rb",
     "lib/generators/secondbase/templates/migration.rb",
     "lib/secondbase.rb",
+    "lib/secondbase/active_record/associations/has_and_belongs_to_many_association.rb",
+    "lib/secondbase/active_record/base.rb",
+    "lib/secondbase/active_record/fixtures.rb",
+    "lib/secondbase/active_record/patches.rb",
+    "lib/secondbase/active_record/test_fixtures.rb",
     "lib/secondbase/model.rb",
     "lib/secondbase/railtie.rb",
     "lib/secondbase/rake_method_chain.rb",
