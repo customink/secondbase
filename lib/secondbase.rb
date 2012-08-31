@@ -1,9 +1,10 @@
 require 'active_record'
+require 'secondbase/active_record/patches'
 
 module SecondBase
   CONNECTION_PREFIX = 'secondbase'
   
-  require 'secondbase/railtie' if Rails::VERSION::MAJOR == 3
+  require 'secondbase/railtie'
   require 'secondbase/rake_method_chain'
   
   def self.do

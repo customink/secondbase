@@ -1,5 +1,3 @@
-require 'secondbase/model'
-
 ###########################
 # Monkey patch Fixtures
 # Fixtures needs to load fixtures into the database defined by the parent class!
@@ -7,7 +5,7 @@ require 'secondbase/model'
 # I feel like the concepts here could be incorporated directly into Fixtures. 
 # I mean, they shouldn't be so presumptions to think that every model lives in the 
 # same database....
-class Fixtures
+class Fixtures < (RUBY_VERSION < '1.9' ? YAML::Omap : Hash)
   def self.create_fixtures(fixtures_directory, table_names, class_names = {})
     table_names = [table_names].flatten.map { |n| n.to_s }
     table_names.each { |n| class_names[n.tr('/', '_').to_sym] = n.classify if n.include?('/') }
