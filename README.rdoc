@@ -4,7 +4,7 @@ SecondBase adds a second database to your application.  While Rails enables you 
 
 SecondBase enables Rails to work with, and manage, a second database (almost) transparently.  As a developer, you should not even realize a second database is in play.  Core rake tasks such as rake db:create, rake db:migrate, and rake test will continue to work seamlessly with both databases without you, the developer, having to run any extra rake tasks.
 
-SecondBase works with Rails 2.3.x and 3.0.x.  I've not tried to use SecondBase with Rails 3.1 yet, although someone has submitted a pull request fixing a 3.1 issue, so I assume it's working OK?
+This version of SecondBase only works with Rails 2.3.x.  There are some issues with using HBTM relationships with this version of the gem.
 
 == Contributing to SecondBase
  
@@ -17,7 +17,7 @@ SecondBase works with Rails 2.3.x and 3.0.x.  I've not tried to use SecondBase w
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
 
 == System Requirements
-SecondBase now supports Rails 2.x and Rails 3.x.
+Rails 2.x
 
 == Installation
 Modify your Gemfile to include SecondBase:
@@ -62,9 +62,6 @@ Configure your database.yml to define your SecondBase:
 
 === Migrations
 SecondBase comes with a generator to assist in managing your migrations
-
-Rails 3.x:
-  rails generator secondbase:migration CreateWidgetsTable
 
 Rails 2.x:
   script/generate secondbase_migration CreateWidgetsTable
@@ -128,16 +125,13 @@ This is patch to fixtures that will identify the fixtures which belong to models
 
 At this time, I can verify that SecondBase works with Fixtures, Machinist and FactoryGirl.  Conceivably, other test factories should work, but there is currently no support for this.  If you have the time to update this gem to be test object compatible, by all means...
 
-== TODO
-- Migration generator in Rails 3.x needs support for attribute generation (similar to rails generate migration).  For example:
-  `rails generate secondbase:migration AddTitleBodyToPost title:string body:text published:boolean`
-
+== NOTES
 - rake db:fixtures:load is currently broken.  Like many other things I have fixed, it assumes you only one a single database and attempts to load all fixtures into it.  I don't believe we can get away with alias chaining this one, I think (like the Fixtures class), we'll have to freedom patch it.
 
 - TESTS!!  Not 100% sure how to test the rake tasks, but I can definitely write tests for the classes and generators. I did this in my spare time, sorry...
 
 == Copyright
 
-Copyright (c) 2010 karledurante. See LICENSE.txt for
+Copyright (c) 2010 - 2012 karledurante. See LICENSE.txt for
 further details.
 
