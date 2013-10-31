@@ -66,7 +66,7 @@ namespace :db do
       # reset connection to secondbase...
       SecondBase::has_runner(Rails.env)
       
-      pending_migrations = ActiveRecord::Migrator.new(:up, "db/migrate/#{SecondBase::CONNECTION_PREFIX}").pending_migrations
+      pending_migrations = ActiveRecord::Migrator.new(:up, "db/#{SecondBase::CONNECTION_PREFIX}/").pending_migrations
 
       if pending_migrations.any?
         puts "You have #{pending_migrations.size} pending migrations:"
@@ -93,7 +93,7 @@ namespace :db do
       
       # run secondbase migrations...
       ActiveRecord::Migration.verbose = ENV["VERBOSE"] ? ENV["VERBOSE"] == "true" : true
-      ActiveRecord::Migrator.migrate("db/migrate/#{SecondBase::CONNECTION_PREFIX}/", ENV["VERSION"] ? ENV["VERSION"].to_i : nil)
+      ActiveRecord::Migrator.migrate("db/#{SecondBase::CONNECTION_PREFIX}/", ENV["VERSION"] ? ENV["VERSION"].to_i : nil)
       
       # reset connection back to firstbase...
       FirstBase::has_runner(Rails.env)
@@ -108,7 +108,7 @@ namespace :db do
         # reset connection to secondbase...
         SecondBase::has_runner(Rails.env)
         
-        ActiveRecord::Migrator.run(:up, "db/migrate/#{SecondBase::CONNECTION_PREFIX}/", version)
+        ActiveRecord::Migrator.run(:up, "db/#{SecondBase::CONNECTION_PREFIX}/", version)
         
         # reset connection back to firstbase...
         FirstBase::has_runner(Rails.env)
@@ -124,7 +124,7 @@ namespace :db do
         # reset connection to secondbase...
         SecondBase::has_runner(Rails.env)
         
-        ActiveRecord::Migrator.run(:down, "db/migrate/#{SecondBase::CONNECTION_PREFIX}/", version)
+        ActiveRecord::Migrator.run(:down, "db/#{SecondBase::CONNECTION_PREFIX}/", version)
         
         # reset connection back to firstbase...
         FirstBase::has_runner(Rails.env)
@@ -133,7 +133,7 @@ namespace :db do
   end
   
   namespace :create do
-    desc 'Create the database defined in config/database.yml for the current RAILS_ENV'
+    desc 'Create the database defined in config/database.yml for the current Rails.env'
     task :secondbase => :load_config do
       
       # We can still use the #create_database method defined in activerecord's databases.rake
@@ -151,7 +151,7 @@ namespace :db do
         SecondBase::has_runner(Rails.env)
         
         # dump the current env's db, be sure to add the schema information!!!
-        dump_file = "#{RAILS_ROOT}/db/#{SecondBase::CONNECTION_PREFIX}_#{RAILS_ENV}_structure.sql"
+        dump_file = "#{Rails.root}/db/#{SecondBase::CONNECTION_PREFIX}_#{Rails.env}_structure.sql"
         
         File.open(dump_file, "w+") do |f| 
           f << ActiveRecord::Base.connection.structure_dump
@@ -197,9 +197,9 @@ namespace :db do
         # now lets clone the structure for secondbase
         SecondBase::has_runner('test')
         
-        ActiveRecord::Base.connection.execute('SET foreign_key_checks = 0') if secondbase_config(RAILS_ENV)['adapter'][/mysql/]
+        ActiveRecord::Base.connection.execute('SET foreign_key_checks = 0') if secondbase_config(Rails.env)['adapter'][/mysql/]
         
-        IO.readlines("#{RAILS_ROOT}/db/#{SecondBase::CONNECTION_PREFIX}_#{RAILS_ENV}_structure.sql").join.split("\n\n").each do |table|
+        IO.readlines("#{Rails.root}/db/#{SecondBase::CONNECTION_PREFIX}_#{Rails.env}_structure.sql").join.split("\n\n").each do |table|
           ActiveRecord::Base.connection.execute(table)
         end
         
