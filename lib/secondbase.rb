@@ -26,11 +26,8 @@ module SecondBase
   # means that if we swap out the base connection we risk the SQL translator being wrong.
   # This is an ugly hack that resets the adapter.  See Line 27 of Arel's visitors.rb class.
   def self.reset_visitor_cache
-    if Rails.version.to_i >= 3
-      engine = ActiveRecord::Base
-      adapter = engine.connection_pool.spec.config[:adapter]
-      Arel::Visitors::ENGINE_VISITORS[engine] = (Arel::Visitors::VISITORS[adapter] || Arel::Visitors::ToSql).new(engine)
-    end
+    engine = ActiveRecord::Base
+    Arel::Visitors::ENGINE_VISITORS[engine] = engine.connection.visitor
   end
 end
 
