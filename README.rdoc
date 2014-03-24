@@ -64,7 +64,7 @@ Configure your database.yml to define your SecondBase:
 SecondBase comes with a generator to assist in managing your migrations
 
 Rails 3.x:
-  rails generator secondbase:migration CreateWidgetsTable
+  rails generate secondbase:migration CreateWidgetsTable
 
 Rails 2.x:
   script/generate secondbase_migration CreateWidgetsTable
