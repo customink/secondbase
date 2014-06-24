@@ -71,7 +71,7 @@ Rails 2.x:
     
 The generator will organize your second (data)base migrations alongside of your primary database.  The above command will generate the file:
 
-  db/migrate/secondbase/20101203211338_create_widgets_table.rb
+  db/secondbase/20101203211338_create_widgets_table.rb
   
 To run your migrations, simply run:
 
