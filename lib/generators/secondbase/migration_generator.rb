@@ -21,16 +21,16 @@ module Secondbase
     end
 
     def create_migration_file
-      migration_template 'migration.rb', 
-                          "db/migrate/#{SecondBase::CONNECTION_PREFIX}/#{class_name.underscore}.rb", 
+      migration_template 'migration.rb',
+                          "db/#{SecondBase::CONNECTION_PREFIX}/#{class_name.underscore}.rb",
                           :assigns => get_local_assigns
     end
-    
-    private 
+
+    private
     # TODO: We need to add support for name/value pairs like title:string dob:date etc..
     def get_local_assigns
       { :class_name => class_name }
     end
-        
+
   end
 end
