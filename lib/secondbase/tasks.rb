@@ -51,10 +51,10 @@ namespace :db do
       Rake::Task['environment'].invoke
 
       # Clone the secondary database structure
-      Rake::Task["db:test:prepare:secondbase"].invoke unless ENV["SKIP_TEST_STRUCTURE_DUMP"] == "true"
+      Rake::Task["db:test:prepare:secondbase"].invoke
 
       # Execute the original/default prepare task
-      Rake::Task["db:test:prepare:original"].invoke unless ENV["SKIP_TEST_STRUCTURE_DUMP"] == "true"
+      Rake::Task["db:test:prepare:original"].invoke
     end
   end
 
@@ -199,9 +199,17 @@ namespace :db do
         Rake::Task['environment'].invoke
 
         SecondBase::has_runner('test')
-
-        ActiveRecord::Base.connection.recreate_database(secondbase_config('test')["database"], secondbase_config('test'))
-
+        
+        case secondbase_config('test')["adapter"]
+        
+        when "mysql"
+          ActiveRecord::Base.connection.recreate_database(secondbase_config('test')["database"], secondbase_config('test'))
+        when "oracle_enhanced"
+          ActiveRecord::Base.connection.full_drop
+          # Rake::Task["db:drop"].invoke
+          Rake::Task["db:create:secondbase"].invoke
+        end
+        
         FirstBase::has_runner(Rails.env)
       end
     end
