@@ -51,10 +51,10 @@ namespace :db do
       Rake::Task['environment'].invoke
 
       # Clone the secondary database structure
-      Rake::Task["db:test:prepare:secondbase"].invoke unless ENV["SKIP_TEST_STRUCTURE_DUMP"] == true
+      Rake::Task["db:test:prepare:secondbase"].invoke unless ENV["SKIP_TEST_STRUCTURE_DUMP"] == "true"
 
       # Execute the original/default prepare task
-      Rake::Task["db:test:prepare:original"].invoke unless ENV["SKIP_TEST_STRUCTURE_DUMP"] == true
+      Rake::Task["db:test:prepare:original"].invoke unless ENV["SKIP_TEST_STRUCTURE_DUMP"] == "true"
     end
   end
 
