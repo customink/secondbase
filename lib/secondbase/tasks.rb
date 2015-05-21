@@ -201,18 +201,15 @@ namespace :db do
         SecondBase::has_runner('test')
         
         case secondbase_config('test')["adapter"]
-        
         when "mysql"
           ActiveRecord::Base.connection.recreate_database(secondbase_config('test')["database"], secondbase_config('test'))
         when "oracle_enhanced"
-          ActiveRecord::Tasks::DatabaseTasks.purge_current
+          ActiveRecord::Base.connection.execute_structure_dump(ActiveRecord::Base.connection.full_drop)
         end
         
         FirstBase::has_runner(Rails.env)
       end
     end
-
-    
 
     namespace :clone_structure do
       task :secondbase do
