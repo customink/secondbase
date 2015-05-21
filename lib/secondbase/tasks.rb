@@ -205,14 +205,14 @@ namespace :db do
         when "mysql"
           ActiveRecord::Base.connection.recreate_database(secondbase_config('test')["database"], secondbase_config('test'))
         when "oracle_enhanced"
-          ActiveRecord::Base.connection.full_drop
-          # Rake::Task["db:drop"].invoke
-          Rake::Task["db:create:secondbase"].invoke
+          ActiveRecord::Tasks::DatabaseTasks.purge_current
         end
         
         FirstBase::has_runner(Rails.env)
       end
     end
+
+    
 
     namespace :clone_structure do
       task :secondbase do
