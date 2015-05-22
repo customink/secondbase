@@ -227,6 +227,7 @@ namespace :db do
           IO.readlines(structure_dump_file).join.split("\n\n").each do |table|
             ActiveRecord::Base.connection.execute(table)
           end
+        # Since Oracle enhanced adapter has its own sql structure we need a different split
         when "oracle"
           IO.readlines(structure_dump_file).join.split("\n\n/\n\n").each do |statement|
             ActiveRecord::Base.connection.execute(statement) unless statement.blank?

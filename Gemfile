@@ -10,5 +10,5 @@ group :development do
   gem "bundler", ">= 1.0.0"
   gem "jeweler", "~> 1.8.2"
   gem "activerecord", "~> 3.0.0"
-  gem 'activerecord-oracle_enhanced-adapter', '~> 1.4.0'
+  gem 'activerecord-oracle_enhanced-adapter',  '1.5.5'
 end
