@@ -218,14 +218,17 @@ namespace :db do
         # dump secondbase structure and purge the test secondbase
         `rake db:structure:dump:secondbase`
         `rake db:test:purge:secondbase`
-
+        structure_dump_file = "#{Rails.root}/db/#{SecondBase::CONNECTION_PREFIX}_#{Rails.env}_structure.sql"
         # now lets clone the structure for secondbase
         SecondBase::has_runner('test')
-
-        ActiveRecord::Base.connection.execute('SET foreign_key_checks = 0') if secondbase_config(Rails.env)['adapter'][/mysql/]
-
-        IO.readlines("#{Rails.root}/db/#{SecondBase::CONNECTION_PREFIX}_#{Rails.env}_structure.sql").join.split("\n\n").each do |table|
-          ActiveRecord::Base.connection.execute(table)
+        case secondbase_config(Rails.env)['adapter']
+        when "mysql"
+          ActiveRecord::Base.connection.execute('SET foreign_key_checks = 0') if secondbase_config(Rails.env)['adapter'][/mysql/]
+          IO.readlines(structure_dump_file).join.split("\n\n").each do |table|
+            ActiveRecord::Base.connection.execute(table)
+          end
+        when "oracle"
+          ActiveRecord::Base.connection.execute_structure_dump(File.read(structure_dump_file))
         end
 
         FirstBase::has_runner(Rails.env)
