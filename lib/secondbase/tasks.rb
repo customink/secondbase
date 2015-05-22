@@ -228,9 +228,8 @@ namespace :db do
             ActiveRecord::Base.connection.execute(table)
           end
         # Since Oracle enhanced adapter has its own sql structure we need a different split
-        when "oracle"
+        when "oracle_enhanced"
           IO.readlines(structure_dump_file).join.split("\n\n/\n\n").each do |statement|
-            Rails.logger.info statement
             statement.gsub!("RAW", "RAW(255)") if statement.match(/ RAW/)
             ActiveRecord::Base.connection.execute(statement) unless statement.blank?
           end
