@@ -229,7 +229,7 @@ namespace :db do
           end
         when "oracle"
           IO.readlines(structure_dump_file).join.split("\n\n/\n\n").each do |statement|
-            ActiveRecord::Base.connection.execute(statement)
+            ActiveRecord::Base.connection.execute(statement) unless statement.blank?
           end
         end
 
