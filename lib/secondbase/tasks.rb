@@ -228,7 +228,9 @@ namespace :db do
             ActiveRecord::Base.connection.execute(table)
           end
         when "oracle"
-          ActiveRecord::Base.connection.execute_structure_dump(File.read(structure_dump_file))
+          IO.readlines(structure_dump_file).join.split("\n\n/\n\n").each do |statement|
+            ActiveRecord::Base.connection.execute(statement)
+          end
         end
 
         FirstBase::has_runner(Rails.env)
