@@ -230,6 +230,7 @@ namespace :db do
         # Since Oracle enhanced adapter has its own sql structure we need a different split
         when "oracle"
           IO.readlines(structure_dump_file).join.split("\n\n/\n\n").each do |statement|
+            p statement unless statement.blank?
             statement.gsub!("RAW", "RAW(255)") if statement.match(/ RAW/)
             ActiveRecord::Base.connection.execute(statement) unless statement.blank?
           end
