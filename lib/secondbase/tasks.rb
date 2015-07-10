@@ -177,6 +177,10 @@ namespace :db do
           f << ActiveRecord::Base.connection.structure_dump
         end
 
+        if secondbase_config(Rails.env)['structure_dump'] == 'db_stored_code'
+           File.open(dump_file, 'a') { |f| f << ActiveRecord::Base.connection.structure_dump_db_stored_code }
+        end
+
         if ActiveRecord::Base.connection.supports_migrations?
           File.open(dump_file, "a") { |f| f << ActiveRecord::Base.connection.dump_schema_information }
         end
