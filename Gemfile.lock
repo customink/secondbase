@@ -10,7 +10,7 @@ GEM
       activesupport (= 3.0.20)
       arel (~> 2.0.10)
       tzinfo (~> 0.3.23)
-    activerecord-oracle_enhanced-adapter (1.5.6)
+    activerecord-oracle_enhanced-adapter (1.5.5)
     activesupport (3.0.20)
     addressable (2.3.8)
     arel (2.0.10)
@@ -66,7 +66,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord (~> 3.0.0)
-  activerecord-oracle_enhanced-adapter (= 1.5.6)
+  activerecord-oracle_enhanced-adapter (= 1.5.5)
   bundler (>= 1.0.0)
   jeweler (~> 1.8.2)
   shoulda
