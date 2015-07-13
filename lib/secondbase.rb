@@ -1,5 +1,6 @@
 require 'active_record'
 require 'secondbase/active_record/patches'
+require 'secondbase/active_record/oracle_enhanced_structure_dump'
 
 module SecondBase
   CONNECTION_PREFIX = 'secondbase'
