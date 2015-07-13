@@ -34,9 +34,10 @@ module ActiveRecord #:nodoc:
         ddl_dump.map do |row|
           ddl = row['ddl']
           ddl = strip_schema_name(ddl, row['owner'])
-          ddl = remove_alter_trigger_statements(ddl)
-          ddl = substitute_synonym_target_user(ddl)
-          substitute_view_target_user(ddl)
+          remove_alter_trigger_statements(ddl)
+
+          # ddl = substitute_synonym_target_user(ddl)
+          # substitute_view_target_user(ddl)
         end
       end
 
