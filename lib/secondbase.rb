@@ -1,5 +1,6 @@
 require 'active_record'
 require 'secondbase/active_record/patches'
+require 'secondbase/force_secondbase'
 
 module SecondBase
   CONNECTION_PREFIX = 'secondbase'
