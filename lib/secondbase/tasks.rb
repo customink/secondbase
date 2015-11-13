@@ -1,219 +1,168 @@
 require 'secondbase'
 
-####################################
-#                                  
-# SecondBase database managment tasks  
-#
-# We are overriding a handful of rake tasks here:
-# db:create
-# db:migrate
-# db:test:prepare
-#
-# We ARE NOT redefining the implementation of these tasks, we are simply 
-# appending custom functionality to them. We just want to be sure that in 
-# addition to creating, migrating, and preparing your default (Rails.env) 
-# database, that we can also work with with the second (data)base. 
+db_namespace = namespace :db do
+  desc '[SECONDBASE] Drops your local databases'
+  override_task :drop => [:load_config] do
+    Rake::Task['db:drop:original'].invoke
+    Rake::Task['secondbase:drop'].invoke
+  end
   
-namespace :db do
-  override_task :create do
-    # First, we execute the original/default create task
-    Rake::Task["db:create:original"].invoke
-    
-    # now, we create our secondary databases
-    Rake::Task['environment'].invoke
-    ActiveRecord::Base.configurations[SecondBase::CONNECTION_PREFIX].each_value do |config|
-      next unless config['database']
-      
-      # Only connect to local databases
-      local_database?(config) { create_database(config) }
+  desc '[SECONDBASE] Creates your local databases'
+  override_task :create => [:load_config] do
+    Rake::Task['db:create:original'].invoke
+    Rake::Task['secondbase:create'].invoke
+  end
+  
+  desc '[SECONDBASE] Migrates your local databases'
+  override_task :migrate => [:load_config] do
+    Rake::Task['db:migrate:original'].invoke
+    Rake::Task['secondbase:migrate'].invoke
+  end
+  
+  desc '[SECONDBASE] Check if thier are pending migrations across both databases'
+  override_task :abort_if_pending_migrations => [:environment, :load_config] do
+    Rake::Task['db:abort_if_pending_migrations:original'].invoke
+    Rake::Task['secondbase:abort_if_pending_migrations'].invoke
+  end
+  
+  namespace :structure do
+    desc '[SECONDBASE] Dump the database structures to disk'
+    override_task :dump => [:environment, :load_config] do
+      Rake::Task['db:structure:dump:original'].invoke
+      Rake::Task['secondbase:structure:dump'].invoke
     end
-  end
-  
-  override_task :migrate do
-    Rake::Task['environment'].invoke
     
-    # Migrate secondbase...
-    Rake::Task["db:migrate:secondbase"].invoke
-    
-    # Execute the original/default prepare task 
-    Rake::Task["db:migrate:original"].invoke
-  end
-  
-  override_task :abort_if_pending_migrations do  
-    # Execute the original/default prepare task 
-    Rake::Task["db:abort_if_pending_migrations"].invoke
-    
-    Rake::Task["db:abort_if_pending_migrations:secondbase"].invoke
+    desc '[SECONDBASE] Loads the database structures from disk'
+    override_task :load => [:environment, :load_config] do
+      Rake::Task['db:structure:load:original'].invoke
+      Rake::Task['secondbase:structure:load'].invoke
+    end
   end
   
   namespace :test do
-    override_task :prepare do
-      Rake::Task['environment'].invoke
-      
-      # Clone the secondary database structure
-      Rake::Task["db:test:prepare:secondbase"].invoke
-      
-      # Execute the original/default prepare task 
-      Rake::Task["db:test:prepare:original"].invoke
+    desc '[SECONDBASE] Dump the database structures to disk'
+    override_task :purge => [:environment, :load_config] do
+      Rake::Task['db:test:purge:original'].invoke
+      Rake::Task['secondbase:test:purge'].invoke
+    end
+  end  
+end
+
+namespace :secondbase do  
+  desc 'Drops the second database'
+  task :drop do
+    for_all_local do |c|
+      ActiveRecord::Tasks::DatabaseTasks.drop c
     end
   end
   
-  ##################################
-  # SecondBase specific database tasks 
-  namespace :abort_if_pending_migrations do
-    desc "determines if your secondbase has pending migrations"
-    task :secondbase => :environment do
-      # reset connection to secondbase...
-      SecondBase::has_runner(Rails.env)
+  desc 'Creates the second database'
+  task :create do
+    for_all_local do |c|
+      ActiveRecord::Tasks::DatabaseTasks.create c
+    end
+  end
+  
+  desc 'Migrate the second database' 
+  task migrate: %w(environment db:load_config) do
+    on_secondbase do
+      ActiveRecord::Migration.verbose = ENV["VERBOSE"] ? ENV["VERBOSE"] == "true" : true
+      ActiveRecord::Migrator.migrate("db/#{SecondBase::CONNECTION_PREFIX}/", ENV["VERSION"] ? ENV["VERSION"].to_i : nil)
+    end 
+  end
+  
+  task :up do
+    on_secondbase do
+      version = ENV["VERSION"] ? ENV["VERSION"].to_i : nil
+      raise "VERSION is required" unless version
       
+      ActiveRecord::Migrator.run(:down, "db/#{SecondBase::CONNECTION_PREFIX}/", version)
+    end
+  end
+  
+  task :down do
+    on_secondbase do
+      version = ENV["VERSION"] ? ENV["VERSION"].to_i : nil
+      raise "VERSION is required" unless version
+      
+      ActiveRecord::Migrator.run(:down, "db/#{SecondBase::CONNECTION_PREFIX}/", version)
+    end
+  end
+  
+  task :abort_if_pending_migrations do
+    on_secondbase do
       pending_migrations = ActiveRecord::Migrator.new(:up, "db/#{SecondBase::CONNECTION_PREFIX}/").pending_migrations
-
       if pending_migrations.any?
-        puts "You have #{pending_migrations.size} pending migrations:"
+        puts "You have #{pending_migrations.size} secondbase pending migrations:"
         pending_migrations.each do |pending_migration|
           puts '  %4d %s' % [pending_migration.version, pending_migration.name]
         end
         abort %{Run "rake db:migrate" to update your database then try again.}
       end
-      
-      # reset connection back to firstbase...
-      FirstBase::has_runner(Rails.env)
-    end
-  end
-  
-  namespace :migrate do
-    desc "migrates the second database"
-    task :secondbase => :load_config do
-      Rake::Task['environment'].invoke
-      # NOTE: We are not generating a db schema on purpose.  Since we're running 
-      # in a dual db mode, it could be confusing to have two schemas.
-      
-      # reset connection to secondbase...
-      SecondBase::has_runner(Rails.env)
-      
-      # run secondbase migrations...
-      ActiveRecord::Migration.verbose = ENV["VERBOSE"] ? ENV["VERBOSE"] == "true" : true
-      ActiveRecord::Migrator.migrate("db/#{SecondBase::CONNECTION_PREFIX}/", ENV["VERSION"] ? ENV["VERSION"].to_i : nil)
-      
-      # reset connection back to firstbase...
-      FirstBase::has_runner(Rails.env)
-    end
-    
-    namespace :up do
-      desc 'Runs the "up" for a given SecondBase migration VERSION.'
-      task :secondbase => :environment do
-        version = ENV["VERSION"] ? ENV["VERSION"].to_i : nil
-        raise "VERSION is required" unless version
-        
-        # reset connection to secondbase...
-        SecondBase::has_runner(Rails.env)
-        
-        ActiveRecord::Migrator.run(:up, "db/#{SecondBase::CONNECTION_PREFIX}/", version)
-        
-        # reset connection back to firstbase...
-        FirstBase::has_runner(Rails.env)
-      end
-    end
-    
-    namespace :down do
-      desc 'Runs the "down" for a given SecondBase migration VERSION.'
-      task :secondbase => :environment do
-        version = ENV["VERSION"] ? ENV["VERSION"].to_i : nil
-        raise "VERSION is required" unless version
-        
-        # reset connection to secondbase...
-        SecondBase::has_runner(Rails.env)
-        
-        ActiveRecord::Migrator.run(:down, "db/#{SecondBase::CONNECTION_PREFIX}/", version)
-        
-        # reset connection back to firstbase...
-        FirstBase::has_runner(Rails.env)
-      end
-    end
-  end
-  
-  namespace :create do
-    desc 'Create the database defined in config/database.yml for the current Rails.env'
-    task :secondbase => :load_config do
-      
-      # We can still use the #create_database method defined in activerecord's databases.rake
-      # we call it passing the secondbase config instead of the default (Rails.env) config...
-      create_database(secondbase_config(Rails.env))
     end
   end
   
   namespace :structure do
-    namespace :dump do
-      desc "dumps structure for both (first and second) databases."
-      task :secondbase do
-        Rake::Task['environment'].invoke
-        
-        SecondBase::has_runner(Rails.env)
-        
-        # dump the current env's db, be sure to add the schema information!!!
-        dump_file = "#{Rails.root}/db/#{SecondBase::CONNECTION_PREFIX}_#{Rails.env}_structure.sql"
-        
-        File.open(dump_file, "w+") do |f| 
-          f << ActiveRecord::Base.connection.structure_dump
+    desc 'Dump the second development structure to disk'
+    task dump: %w(environment db:load_config) do
+      filename = File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, "secondbase_structure.sql")
+      ActiveRecord::Tasks::DatabaseTasks.structure_dump(secondbase_config, filename)
+      on_secondbase do
+        if ActiveRecord::Base.connection.supports_migrations? && ActiveRecord::SchemaMigration.table_exists?
+          File.open(filename, "a") do |f|
+            f.puts ActiveRecord::Base.connection.dump_schema_information
+            f.print "\n"
+          end
         end
-        
-        if ActiveRecord::Base.connection.supports_migrations?
-          File.open(dump_file, "a") { |f| f << ActiveRecord::Base.connection.dump_schema_information }
-        end
-        
-        FirstBase::has_runner(Rails.env)
-      end 
-    end
-  end
-
-  namespace :test do
-    namespace :prepare do
-      desc 'Prepares the test instance of secondbase'
-      task :secondbase => 'db:abort_if_pending_migrations:secondbase' do
-        Rake::Task["db:test:clone_structure:secondbase"].invoke
       end
     end
     
-    namespace :purge do
-      task :secondbase do
-        Rake::Task['environment'].invoke    
-        
-        SecondBase::has_runner('test')
-        
-        ActiveRecord::Base.connection.recreate_database(secondbase_config('test')["database"], secondbase_config('test')) 
-        
-        FirstBase::has_runner(Rails.env)
-      end
-    end
-
-    namespace :clone_structure do
-      task :secondbase do
-        Rake::Task['environment'].invoke
-        
-        # dump secondbase structure and purge the test secondbase
-        `rake db:structure:dump:secondbase`
-        `rake db:test:purge:secondbase`
-
-        # now lets clone the structure for secondbase
-        SecondBase::has_runner('test')
-        
-        ActiveRecord::Base.connection.execute('SET foreign_key_checks = 0') if secondbase_config(Rails.env)['adapter'][/mysql/]
-        
-        IO.readlines("#{Rails.root}/db/#{SecondBase::CONNECTION_PREFIX}_#{Rails.env}_structure.sql").join.split("\n\n").each do |table|
-          ActiveRecord::Base.connection.execute(table)
-        end
-        
-        FirstBase::has_runner(Rails.env)
-      end
+    desc 'Load the second development structure from disk'
+    task load: %w(environment db:load_config) do
+      filename = File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, "secondbase_structure.sql")
+      ActiveRecord::Tasks::DatabaseTasks.structure_load(secondbase_config, filename)
     end
   end
-
+  
+  namespace :test do
+    desc 'Purge the second database'
+    task purge: %w(environment db:load_config) do
+      on_secondbase('test') do
+        ActiveRecord::Base.connection.recreate_database(secondbase_config('test')['database'], secondbase_config('test'))
+      end
+    end
+    
+    desc 'Load the second database to test' 
+    task :load_structure do
+      filename = File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, "secondbase_structure.sql")
+      ActiveRecord::Tasks::DatabaseTasks.structure_load(secondbase_config('test'), filename)
+    end
+  end
 end
 
-
-####################################
-# 
-# Some helper methods to run back and forth between first and second base.
-def secondbase_config(env)
+def secondbase_config(env = Rails.env)
   ActiveRecord::Base.configurations[SecondBase::CONNECTION_PREFIX][env]
 end
+
+def local_database?(configuration)
+  configuration['host'].blank? || ActiveRecord::Tasks::DatabaseTasks::LOCAL_HOSTS.include?(configuration['host'])
+end
+
+def for_all_local
+  ActiveRecord::Base.configurations[SecondBase::CONNECTION_PREFIX].each do |c|
+    env, config = *c
+    next unless config['database']
+    if local_database?(config)
+       yield config
+     else
+       $stderr.puts "This task only modifies local databases. #{config['database']} is on a remote host."
+     end
+   end
+end
+
+def on_secondbase(env = Rails.env)
+  SecondBase::has_runner(Rails.env)
+  yield
+  FirstBase::has_runner(Rails.env)
+end
+
