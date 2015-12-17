@@ -1,11 +1,12 @@
 require 'active_record'
-require 'secondbase/active_record/patches'
+require 'secondbase/active_record/base'
+require 'secondbase/active_record/associations/has_and_belongs_to_many_association' 
 require 'secondbase/force_secondbase'
 
 module SecondBase
   CONNECTION_PREFIX = 'secondbase'
   
-  require 'secondbase/railtie'
+  require 'secondbase/railtie' if defined?(Rails)
   require 'secondbase/rake_method_chain'
   
   def self.do
