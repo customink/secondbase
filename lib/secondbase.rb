@@ -10,10 +10,6 @@ module SecondBase
   require 'secondbase/railtie' if defined?(Rails)
   require 'secondbase/rake_method_chain'
 
-  def self.do
-    "You have just gotten to SecondBase, my friend."
-  end
-
   def self.has_runner(env)
     ActiveRecord::Base.establish_connection(SecondBase::config(env))
     reset_visitor_cache
