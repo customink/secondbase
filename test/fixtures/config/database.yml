@@ -1,0 +1,8 @@
+development:
+  adapter: sqlite3
+  database: ./db/firstbase.sqlite3
+
+secondbase:
+  development:
+    adapter: sqlite3
+    database: ./db/secondbase.sqlite3
