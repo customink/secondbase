@@ -3,5 +3,5 @@ yard/
 vendor/
 pkg/
 .bundle/
-
+.Gemfile.lock
 test/fixture/db/*.{sql,sqlite3}
