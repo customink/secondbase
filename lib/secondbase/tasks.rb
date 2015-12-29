@@ -65,33 +65,40 @@ namespace :secondbase do
   
   desc 'Migrate the second database' 
   task migrate: %w(environment db:load_config) do
+    migration_path = DatabaseTasks.db_dir+ "/#{SecondBase::CONNECTION_PREFIX}/"
     on_secondbase do
       ActiveRecord::Migration.verbose = ENV["VERBOSE"] ? ENV["VERBOSE"] == "true" : true
-      ActiveRecord::Migrator.migrate("db/#{SecondBase::CONNECTION_PREFIX}/", ENV["VERSION"] ? ENV["VERSION"].to_i : nil)
+      ActiveRecord::Migrator.migrate(migration_path, ENV["VERSION"] ? ENV["VERSION"].to_i : nil)
     end 
   end
   
   task :up do
+    migration_path = DatabaseTasks.db_dir+ "/#{SecondBase::CONNECTION_PREFIX}/"
+    
     on_secondbase do
       version = ENV["VERSION"] ? ENV["VERSION"].to_i : nil
       raise "VERSION is required" unless version
       
-      ActiveRecord::Migrator.run(:down, "db/#{SecondBase::CONNECTION_PREFIX}/", version)
+      ActiveRecord::Migrator.run(:down, migration_path, version)
     end
   end
   
   task :down do
+    migration_path = DatabaseTasks.db_dir+ "/#{SecondBase::CONNECTION_PREFIX}/"
+    
     on_secondbase do
       version = ENV["VERSION"] ? ENV["VERSION"].to_i : nil
       raise "VERSION is required" unless version
       
-      ActiveRecord::Migrator.run(:down, "db/#{SecondBase::CONNECTION_PREFIX}/", version)
+      ActiveRecord::Migrator.run(:down, migration_path, version)
     end
   end
   
   task :abort_if_pending_migrations do
+    migration_path = DatabaseTasks.db_dir+ "/#{SecondBase::CONNECTION_PREFIX}/"
+    
     on_secondbase do
-      pending_migrations = ActiveRecord::Migrator.new(:up, "db/#{SecondBase::CONNECTION_PREFIX}/").pending_migrations
+      pending_migrations = ActiveRecord::Migrator.new(:up, migration_path).pending_migrations
       if pending_migrations.any?
         puts "You have #{pending_migrations.size} secondbase pending migrations:"
         pending_migrations.each do |pending_migration|
