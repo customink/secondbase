@@ -16,9 +16,9 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
   s.rdoc_options  = ['--charset=UTF-8']
   s.license       = 'MIT'
-  s.add_runtime_dependency     'activerecord', '~> 4.0'
+  s.add_runtime_dependency     'rails', '~> 4.0'
   s.add_development_dependency 'byebug'
-  s.add_development_dependency 'minitest'
+  s.add_development_dependency 'minitest-spec-rails'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'sqlite3'
 end

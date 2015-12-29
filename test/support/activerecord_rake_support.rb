@@ -1,14 +1,3 @@
-unless defined?(Rails)
-  module Rails
-    def self.root
-      File.expand_path __dir__ + '/../fixtures'
-    end
-
-    def self.env
-      ActiveSupport::StringInquirer.new(ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development')
-    end
-  end
-end
 
 include ActiveRecord::Tasks
 
