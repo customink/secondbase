@@ -104,8 +104,6 @@ Please note that this is equivalent to using ActiveRecord::Base.establish_connec
 FirstBase::has_runner(Rails.env)
 ```
 
-#### Testing
-
 Tests can still be run using `rake test` or `rake test:models`, etc. However, if you are using fixtures, you will need to update your TestHelper class to include:
 
 ```ruby
@@ -115,6 +113,13 @@ require 'secondbase/fixtures'
 This is patch to fixtures that will identify the fixtures which belong to models that extend SecondBase::Base. The patch will then ensure that the table descendants of SecondBase::Base get loaded into your second test database.
 
 At this time, I can verify that SecondBase works with Fixtures, Machinist and FactoryGirl. Conceivably, other test factories should work, but there is currently no support for this. If you have the time to update this gem to be test object compatible, by all means...
+
+
+
+## Versions
+
+The current master branch is for Rails v4.0.0 and up and. We have older work in previous v1.0 releases which partial work for Rails 3.2 or lower. These old versions are feature incomplete and are not supported.
+
 
 
 ## TODO
