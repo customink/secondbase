@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.name          = 'secondbase'
   s.version       = SecondBase::VERSION
   s.platform      = Gem::Platform::RUBY
-  s.authors       = ['Karle Durante', 'Hunter Madison' 'Ken Collins']
+  s.authors       = ['Karle Durante', 'Hunter Madison', 'Ken Collins']
   s.email         = ['kdurante@customink.com', 'hunterglenmadison@icloud.com', 'ken@metaskills.net']
   s.homepage      = 'http://github.com/customink/secondbase'
   s.summary       = 'Allow Rails manage second database in your projects'
