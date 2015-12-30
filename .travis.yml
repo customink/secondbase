@@ -1,0 +1,16 @@
+sudo: false
+cache: bundler
+rvm:
+  - 2.0
+  - 2.1
+  - 2.2.3
+gemfile:
+  - gemfiles/rails40.gemfile
+  - gemfiles/rails41.gemfile
+  - gemfiles/rails42.gemfile
+install:
+  - gem install bundler
+  - bundle --version
+  - bundle install
+script:
+  - bundle exec rake test
