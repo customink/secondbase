@@ -1,8 +1,9 @@
 require 'rake'
-  
+
 # We want to provide a way to alias tasks so we can hook our custom logic
 # into the existing rails framework. For more information and usage, see:
 # http://www.metaskills.net/2010/5/26/the-alias_method_chain-of-rake-override-rake-task
+
 Rake::TaskManager.class_eval do
   def alias_task(fq_name)
     new_name = "#{fq_name}:original"
