@@ -1,5 +1,5 @@
 module Secondbase
-  module ForceSecondbase
+  module Forced
 
     def connection_pool
       SecondBase::Base.connection_pool
