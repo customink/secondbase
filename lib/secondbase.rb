@@ -21,6 +21,7 @@ module SecondBase
 end
 
 module FirstBase
+
   def self.config(env)
     ActiveRecord::Base.configurations[env]
   end
@@ -28,4 +29,5 @@ module FirstBase
   def self.has_runner(env)
     ActiveRecord::Base.establish_connection(FirstBase::config(env))
   end
+
 end

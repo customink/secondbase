@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class RakeTest < Minitest::Unit::TestCase
-  include RakeTestSetup
 
   def setup
     setup_rake
@@ -68,6 +67,7 @@ class RakeTest < Minitest::Unit::TestCase
     assert_equal ["schema_migrations", "second_base_table"], SecondBase::Base.connection.tables
   end
 
+
   private
 
   def clean_artifacts
@@ -83,4 +83,5 @@ class RakeTest < Minitest::Unit::TestCase
     databases = Dir.chdir(DatabaseTasks.db_dir) { Dir['*.sqlite3'] }
     assert_equal [], databases
   end
+
 end
