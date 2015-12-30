@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.rdoc_options  = ['--charset=UTF-8']
   s.license       = 'MIT'
   s.add_runtime_dependency     'rails', '~> 4.0'
+  s.add_development_dependency 'appraisal'
   s.add_development_dependency 'byebug'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'sqlite3'

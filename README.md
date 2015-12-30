@@ -122,6 +122,23 @@ The current master branch is for Rails v4.0.0 and up and. We have older work in 
 
 
 
+## Contributing
+
+We use the [Appraisal](https://github.com/thoughtbot/appraisal) gem from Thoughtbot to help us test different versions of Rails. The `rake appraisal test` command actually runs our test suite against all Rails versions in our `Appraisal` file. So after cloning the repo, running the following commands.
+
+```shell
+$ bundle install
+$ bundle exec appraisal update
+$ bundle exec appraisal rake test
+```
+
+If you want to run the tests for a specific Rails version, use one of the appraisal names found in our `Appraisals` file. For example, the following will run our tests suite for Rails 4.1.x.
+
+```shell
+$ bundle exec appraisal rails41 rake test
+```
+
+
 ## TODO
 
 * Migration generator in Rails 3.x needs support for attribute generation (similar to rails generate migration). For example:

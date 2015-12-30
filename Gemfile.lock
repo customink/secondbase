@@ -42,6 +42,10 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    appraisal (2.1.0)
+      bundler
+      rake
+      thor (>= 0.14.0)
     arel (6.0.3)
     builder (3.2.2)
     byebug (8.2.1)
@@ -105,6 +109,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  appraisal
   byebug
   rake
   secondbase!

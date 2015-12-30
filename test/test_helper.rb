@@ -12,4 +12,3 @@ module SecondBase
 
   end
 end
-
