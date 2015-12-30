@@ -1,7 +1,7 @@
 require 'bundler'
 Bundler.require :development, :test
 require 'secondbase'
-require 'secondbase/model'
+# require 'secondbase/model'
 require 'active_support/test_case'
 require 'active_support/testing/autorun'
 
