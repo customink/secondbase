@@ -7,4 +7,7 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
-task default: [:test]
+task :default do
+  Kernel.system 'appraisal update'
+  Kernel.system 'appraisal rake test'
+end
