@@ -1,8 +1,7 @@
 require 'rails'
 require 'active_record'
 require 'secondbase/version'
-# require 'secondbase/force_secondbase'
-# require 'secondbase/rake_method_chain'
+require 'secondbase/forced'
 
 module SecondBase
 
