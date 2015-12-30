@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
   s.license       = 'MIT'
   s.add_runtime_dependency     'rails', '~> 4.0'
   s.add_development_dependency 'byebug'
-  s.add_development_dependency 'minitest-spec-rails'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'sqlite3'
 end
