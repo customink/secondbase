@@ -6,3 +6,4 @@ pkg/
 .Gemfile.lock
 gemfiles/*
 test/fixture/db/*.{sql,sqlite3}
+*.log
