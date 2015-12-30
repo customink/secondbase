@@ -1,6 +1,7 @@
 require 'rails'
 require 'active_record'
 require 'secondbase/version'
+require 'secondbase/railtie'
 require 'secondbase/forced'
 
 module SecondBase
