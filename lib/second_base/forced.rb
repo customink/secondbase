@@ -1,4 +1,4 @@
-module Secondbase
+module SecondBase
   module Forced
 
     def connection_pool
