@@ -13,7 +13,6 @@ class RakeTest < SecondBase::TestCase
     refute_match %r{create_table "comments"}, schema
     assert_connection_tables ActiveRecord::Base, ['users', 'posts']
     # Second database and schema.
-
   end
 
 
@@ -21,9 +20,9 @@ class RakeTest < SecondBase::TestCase
   def test_db_create_drop
     skip
     Rake::Task['db:create'].execute
-    assert_equal ['base.sqlite3', 'second.sqlite3'], dummy_databases
+    assert_dummy_databases
     Rake::Task['db:drop'].execute
-    assert_equal [], dummy_databases
+    refute_dummy_databases
   end
 
   def test_abort_if_pending

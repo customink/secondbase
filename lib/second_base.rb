@@ -1,5 +1,6 @@
 require 'rails'
 require 'active_record'
+require 'active_record/railtie'
 require 'second_base/version'
 require 'second_base/railtie'
 require 'second_base/forced'
@@ -17,6 +18,14 @@ module SecondBase
 
   def self.config_name
     'secondbase'
+  end
+
+  def self.on_base
+    origional_config = ActiveRecord::Tasks::DatabaseTasks.current_config
+    ActiveRecord::Base.establish_connection(config)
+    yield
+  ensure
+    ActiveRecord::Base.establish_connection(origional_config)
   end
 
 end
