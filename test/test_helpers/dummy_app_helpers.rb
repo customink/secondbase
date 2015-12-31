@@ -4,7 +4,8 @@ module SecondBase
     extend ActiveSupport::Concern
 
     included do
-      teardown :teardown_files
+      setup    :delete_dummy_files
+      teardown :delete_dummy_files
     end
 
     private
@@ -25,12 +26,16 @@ module SecondBase
       dummy_app.root.join 'tmp'
     end
 
+    def dummy_db
+      dummy_app.root.join 'db'
+    end
+
     def dummy_schema
-      dummy_app.root.join 'db', 'schema.rb'
+      dummy_db.join 'schema.rb'
     end
 
     def dummy_databases
-      Dir.chdir(dummy_app.root.join('db')) { Dir['*.sqlite3'] }
+      Dir.chdir(dummy_db) { Dir['*.sqlite3'] }
     end
 
     def assert_dummy_databases
@@ -41,9 +46,9 @@ module SecondBase
       assert_equal [], dummy_databases
     end
 
-    def teardown_files
+    def delete_dummy_files
       FileUtils.rm_rf dummy_schema
-      dummy_databases.each { |db| FileUtils.rm_rf(db) }
+      Dir.chdir(dummy_db) { dummy_databases.each { |db| FileUtils.rm_rf(db) } }
     end
 
   end
