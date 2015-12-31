@@ -1,5 +1,6 @@
 doc/
 yard/
+.yardoc/
 vendor/
 pkg/
 .bundle/

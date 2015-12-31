@@ -139,6 +139,7 @@ GEM
     thread_safe (0.3.5)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
+    yard (0.8.7.6)
 
 PLATFORMS
   ruby
@@ -152,6 +153,7 @@ DEPENDENCIES
   secondbase!
   sqlite3
   terminal-notifier-guard
+  yard
 
 BUNDLED WITH
    1.10.6
