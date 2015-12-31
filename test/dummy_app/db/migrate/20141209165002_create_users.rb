@@ -4,7 +4,7 @@ class CreateUsers < ActiveRecord::Migration
     create_table :users, force: true do |t|
       t.string :name
       t.string :email
-      t.timestamps
+      t.timestamps null: false
     end
   end
 

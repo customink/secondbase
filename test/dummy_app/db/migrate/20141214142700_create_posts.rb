@@ -5,7 +5,7 @@ class CreatePosts < ActiveRecord::Migration
       t.text :title
       t.text :body
       t.references :user, index: true
-      t.timestamps
+      t.timestamps null: false
     end
   end
 

@@ -28,6 +28,9 @@ module Dummy
     config.eager_load = true
     config.secret_key_base = '012345678901234567890123456789'
 
+    # Keep pending test:prepare via pending migrations from running.
+    config.active_record.maintain_test_schema = false if ActiveRecord::Base.respond_to?(:maintain_test_schema)
+
   end
 end
 

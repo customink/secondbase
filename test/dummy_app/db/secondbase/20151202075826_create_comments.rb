@@ -4,7 +4,7 @@ class CreateComments < ActiveRecord::Migration
     create_table :comments, force: true do |t|
       t.text :body
       t.references :user, index: true
-      t.timestamps
+      t.timestamps null: false
     end
   end
 

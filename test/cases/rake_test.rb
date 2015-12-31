@@ -11,6 +11,10 @@ class RakeTest < SecondBase::TestCase
   #   clean_artifacts
   # end
 
+  def test_db_migrate
+    Dir.chdir(dummy_root) { `rake db:migrate` }
+  end
+
   def test_db_create_drop
     skip
     Rake::Task['db:create'].execute

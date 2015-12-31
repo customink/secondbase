@@ -1,0 +1,2 @@
+require File.expand_path '../init', __FILE__
+Dummy::Application.load_tasks
