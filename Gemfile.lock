@@ -48,7 +48,6 @@ GEM
       thor (>= 0.14.0)
     arel (6.0.3)
     builder (3.2.2)
-    byebug (8.2.1)
     coderay (1.1.0)
     concurrent-ruby (1.0.0)
     erubis (2.7.0)
@@ -146,9 +145,9 @@ PLATFORMS
 
 DEPENDENCIES
   appraisal
-  byebug
   guard
   guard-minitest
+  pry
   rake
   secondbase!
   sqlite3

@@ -59,7 +59,7 @@ class RakeTest < SecondBase::TestCase
   private
 
   def assert_connection_tables(model, expected_tables)
-    model.connection.reconnect!
+    model.establish_connection
     tables = model.connection.tables
     expected_tables.each do |table|
       message = "Expected #{model.name} tables #{tables.inspect} to include #{table.inspect}"
