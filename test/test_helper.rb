@@ -12,6 +12,8 @@ ActiveSupport.test_order = :random if ActiveSupport.respond_to?(:test_order)
 module SecondBase
   class TestCase < ActiveSupport::TestCase
 
+    self.use_transactional_fixtures = false
+
     include RailsVersionHelpers,
             DummyAppHelpers
 

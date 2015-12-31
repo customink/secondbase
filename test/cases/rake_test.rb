@@ -2,35 +2,27 @@ require 'test_helper'
 
 class RakeTest < SecondBase::TestCase
 
-  # setup do
-  #   setup_rake
-  #   ENV["VERBOSE"] = 'false'
-  # end
-
-  # teardown do
-  #   clean_artifacts
-  # end
-
   def test_db_migrate
+    refute_dummy_databases
     Dir.chdir(dummy_root) { `rake db:migrate` }
+    # First database and schema.
+    schema = File.read(dummy_schema)
+    assert_match %r{version: 20141214142700}, schema
+    assert_match %r{create_table "users"}, schema
+    assert_match %r{create_table "posts"}, schema
+    refute_match %r{create_table "comments"}, schema
+    assert_connection_tables ActiveRecord::Base, ['users', 'posts']
+    #
   end
+
+
 
   def test_db_create_drop
     skip
     Rake::Task['db:create'].execute
-    assert_databases_present
+    assert_equal ['base.sqlite3', 'second.sqlite3'], dummy_databases
     Rake::Task['db:drop'].execute
-    assert_databases_absent
-  end
-
-  def test_migrate
-    skip
-    Rake::Task['db:create'].execute
-    assert_equal [], ActiveRecord::Base.connection.tables
-    assert_equal [], SecondBase::Base.connection.tables
-    Rake::Task['db:migrate'].execute
-    assert_equal ["schema_migrations", "first_base_table"], ActiveRecord::Base.connection.tables
-    assert_equal ["schema_migrations", "second_base_table"], SecondBase::Base.connection.tables
+    assert_equal [], dummy_databases
   end
 
   def test_abort_if_pending
@@ -66,18 +58,14 @@ class RakeTest < SecondBase::TestCase
 
   private
 
-  def clean_artifacts
-    Dir.chdir(DatabaseTasks.db_dir) { FileUtils.rm(Dir['*.{sqlite3,sql}']) }
+  def assert_connection_tables(model, expected_tables)
+    model.connection.reconnect!
+    tables = model.connection.tables
+    expected_tables.each do |table|
+      message = "Expected #{model.name} tables #{tables.inspect} to include #{table.inspect}"
+      assert tables.include?(table), message
+    end
   end
 
-  def assert_databases_present
-    databases = Dir.chdir(DatabaseTasks.db_dir) { Dir['*.sqlite3'] }
-    assert_equal ['firstbase.sqlite3', 'secondbase.sqlite3'], databases
-  end
-
-  def assert_databases_absent
-    databases = Dir.chdir(DatabaseTasks.db_dir) { Dir['*.sqlite3'] }
-    assert_equal [], databases
-  end
 
 end

@@ -1,6 +1,9 @@
 clearing :on
 notification :terminal_notifier if defined?(TerminalNotifier)
-ignore %r{test\.log}
+ignore!([
+  /test\/dummy_app/,
+  /byebug/
+])
 
 guard :minitest, {
   all_on_start: true,

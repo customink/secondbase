@@ -22,15 +22,28 @@ module SecondBase
     end
 
     def dummy_tmp
-      dummy_app.root.join('tmp').to_s
+      dummy_app.root.join 'tmp'
     end
 
     def dummy_schema
-      dummy_app.root.join('db', 'schema.rb').to_s
+      dummy_app.root.join 'db', 'schema.rb'
+    end
+
+    def dummy_databases
+      Dir.chdir(dummy_app.root.join('db')) { Dir['*.sqlite3'] }
+    end
+
+    def assert_dummy_databases
+      assert_equal ['base.sqlite3', 'second.sqlite3'], dummy_databases
+    end
+
+    def refute_dummy_databases
+      assert_equal [], dummy_databases
     end
 
     def teardown_files
-      FileUtils.rm_rf(dummy_schema)
+      FileUtils.rm_rf dummy_schema
+      dummy_databases.each { |db| FileUtils.rm_rf(db) }
     end
 
   end

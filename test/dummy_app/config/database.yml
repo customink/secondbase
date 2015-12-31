@@ -1,10 +1,11 @@
 
 test:
   adapter: sqlite3
-  database: ':memory:'
+  database: ./db/base.sqlite3
 
 secondbase:
 
   test:
     adapter: sqlite3
-    database: ':memory:'
+    database: ./db/second.sqlite3
+
