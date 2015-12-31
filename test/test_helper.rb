@@ -1,6 +1,6 @@
 require 'bundler'
 Bundler.require :development, :test
-require 'secondbase'
+require 'second_base'
 require 'active_support/test_case'
 require 'active_support/testing/autorun'
 require 'dummy_app/init'

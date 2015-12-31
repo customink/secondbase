@@ -1,18 +1,18 @@
 module SecondBase
   class Railtie < Rails::Railtie
 
-    config.secondbase = ActiveSupport::OrderedOptions.new
-    config.secondbase.path = 'db/secondbase'
+    config.second_base = ActiveSupport::OrderedOptions.new
+    config.second_base.path = 'db/secondbase'
 
     config.after_initialize do |app|
-      path = config.secondbase.path
+      path = config.second_base.path
       pdir = app.root.join(path)
       FileUtils.mkdir(pdir) unless File.directory?(pdir)
       app.paths.add(path)
     end
 
     rake_tasks do
-      load 'secondbase/databases.rake'
+      load 'second_base/databases.rake'
     end
 
   end
