@@ -12,7 +12,8 @@ class RakeTest < SecondBase::TestCase
     assert_match %r{create_table "posts"}, schema
     refute_match %r{create_table "comments"}, schema
     assert_connection_tables ActiveRecord::Base, ['users', 'posts']
-    #
+    # Second database and schema.
+
   end
 
 

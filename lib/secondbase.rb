@@ -6,26 +6,17 @@ require 'secondbase/forced'
 
 module SecondBase
 
-  CONNECTION_PREFIX = 'secondbase'
+  extend ActiveSupport::Autoload
 
-  def self.has_runner(env)
-    ActiveRecord::Base.establish_connection(SecondBase::config(env))
-  end
+  autoload :Base
 
   def self.config(env)
-    ActiveRecord::Base.configurations[SecondBase::CONNECTION_PREFIX][env]
+    config = ActiveRecord::Base.configurations[config_name]
+    config ? config[env] : nil
   end
 
-end
-
-module FirstBase
-
-  def self.config(env)
-    ActiveRecord::Base.configurations[env]
-  end
-
-  def self.has_runner(env)
-    ActiveRecord::Base.establish_connection(FirstBase::config(env))
+  def self.config_name
+    'secondbase'
   end
 
 end
