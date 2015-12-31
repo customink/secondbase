@@ -8,7 +8,7 @@ module SecondBase
 
   extend ActiveSupport::Autoload
 
-  autoload :Base
+  autoload :Base, 'secondbase/base'
 
   def self.config(env = nil)
     config = ActiveRecord::Base.configurations[config_name]
