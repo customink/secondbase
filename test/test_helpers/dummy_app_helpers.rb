@@ -34,6 +34,10 @@ module SecondBase
       dummy_db.join 'schema.rb'
     end
 
+    def dummy_secondbase_schema
+      dummy_db.join('secondbase', 'schema.rb')
+    end
+    
     def dummy_databases
       Dir.chdir(dummy_db) { Dir['*.sqlite3'] }
     end
@@ -48,6 +52,7 @@ module SecondBase
 
     def delete_dummy_files
       FileUtils.rm_rf dummy_schema
+      FileUtils.rm_rf dummy_secondbase_schema
       Dir.chdir(dummy_db) { dummy_databases.each { |db| FileUtils.rm_rf(db) } }
     end
 
