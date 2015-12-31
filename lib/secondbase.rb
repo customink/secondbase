@@ -10,9 +10,9 @@ module SecondBase
 
   autoload :Base
 
-  def self.config(env)
+  def self.config(env = nil)
     config = ActiveRecord::Base.configurations[config_name]
-    config ? config[env] : nil
+    config ? config[env || Rails.env] : nil
   end
 
   def self.config_name
