@@ -13,4 +13,4 @@ install:
   - bundle --version
   - bundle install
 script:
-  - bundle exec rake test
+  - bundle exec rake
