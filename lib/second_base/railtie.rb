@@ -15,5 +15,9 @@ module SecondBase
       load 'second_base/databases.rake'
     end
 
+    def fullpath
+      Rails.application.config.paths[config.second_base.path].first
+    end
+
   end
 end
