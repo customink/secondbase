@@ -15,7 +15,12 @@ namespace :second_base do
     SecondBase.on_base { Rake::Task['db:create'].execute }
   end
 
+  task drop: [:load_config] do
+    SecondBase.on_base { Rake::Task['db:drop'].execute }
+  end
+
 end
 
 Rake::Task['db:create'].enhance { Rake::Task['second_base:create'].invoke }
 Rake::Task['db:migrate'].enhance { Rake::Task['second_base:migrate'].invoke }
+Rake::Task['db:drop'].enhance { Rake::Task['second_base:drop'].invoke }

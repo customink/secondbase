@@ -27,6 +27,12 @@ class RakeTest < SecondBase::TestCase
     assert_dummy_databases
   end
 
+  def test_db_drop
+    test_db_create
+    Dir.chdir(dummy_root) { `rake db:drop` }
+    refute_dummy_databases
+  end
+
   private
 
   def assert_base_connection_tables(expected_tables)
