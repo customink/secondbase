@@ -11,14 +11,14 @@ class RakeTest < SecondBase::TestCase
     assert_match %r{create_table "users"}, schema
     assert_match %r{create_table "posts"}, schema
     refute_match %r{create_table "comments"}, schema
-    assert_base_connection_tables ['users', 'posts']
+    assert_connection_tables ActiveRecord::Base, ['users', 'posts']
     # Second database and schema.
     secondbase_schema = File.read(dummy_secondbase_schema)
     assert_match %r{version: 20151202075826}, secondbase_schema
     refute_match %r{create_table "users"}, secondbase_schema
     refute_match %r{create_table "posts"}, secondbase_schema
     assert_match %r{create_table "comments"}, secondbase_schema
-    assert_secondbase_connection_tables ['comments']
+    assert_connection_tables SecondBase::Base, ['comments']
   end
 
   def test_db_create
@@ -33,19 +33,32 @@ class RakeTest < SecondBase::TestCase
     refute_dummy_databases
   end
 
-  private
-
-  def assert_base_connection_tables(expected_tables)
-    ActiveRecord::Base.establish_connection
-    assert_connection_tables(ActiveRecord::Base, expected_tables)
+  def test_db_test_purge
+    test_db_create
+    Dir.chdir(dummy_root) { `rake db:test:purge` }
+    reestablish_connection
+    assert_equal [], ActiveRecord::Base.connection.tables
+    assert_equal [], SecondBase::Base.connection.tables
   end
 
-  def assert_secondbase_connection_tables(expected_tables)
+  def test_db_test_load_schema
+    test_db_test_purge
+    Dir.chdir(dummy_root) { `rake db:migrate` }
+    Dir.chdir(dummy_root) { `rake db:test:load_schema` }
+    reestablish_connection
+    assert_connection_tables ActiveRecord::Base, ['users', 'posts']
+    assert_connection_tables SecondBase::Base, ['comments']
+  end
+
+  private
+
+  def reestablish_connection
+    ActiveRecord::Base.establish_connection
     SecondBase::Base.establish_connection(SecondBase.config)
-    assert_connection_tables(SecondBase::Base, expected_tables)
   end
 
   def assert_connection_tables(model, expected_tables)
+    reestablish_connection
     tables = model.connection.tables
     expected_tables.each do |table|
       message = "Expected #{model.name} tables #{tables.inspect} to include #{table.inspect}"
