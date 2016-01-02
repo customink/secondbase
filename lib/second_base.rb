@@ -22,9 +22,12 @@ module SecondBase
 
   def self.on_base
     original_config = ActiveRecord::Tasks::DatabaseTasks.current_config
+    origional_configurations = ActiveRecord::Base.configurations
+    ActiveRecord::Base.configurations = origional_configurations[config_name]
     ActiveRecord::Base.establish_connection(config)
     yield
   ensure
+    ActiveRecord::Base.configurations = origional_configurations
     ActiveRecord::Base.establish_connection(original_config)
   end
 

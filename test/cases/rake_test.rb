@@ -14,20 +14,26 @@ class RakeTest < SecondBase::TestCase
     assert_base_connection_tables ['users', 'posts']
     # Second database and schema.
     secondbase_schema = File.read(dummy_secondbase_schema)
-    assert_match %r{version: 20151202075826}, secondbase_schema    
+    assert_match %r{version: 20151202075826}, secondbase_schema
     refute_match %r{create_table "users"}, secondbase_schema
     refute_match %r{create_table "posts"}, secondbase_schema
     assert_match %r{create_table "comments"}, secondbase_schema
     assert_secondbase_connection_tables ['comments']
   end
 
+  def test_db_create
+    refute_dummy_databases
+    Dir.chdir(dummy_root) { `rake db:create` }
+    assert_dummy_databases
+  end
+
   private
-  
+
   def assert_base_connection_tables(expected_tables)
     ActiveRecord::Base.establish_connection
     assert_connection_tables(ActiveRecord::Base, expected_tables)
   end
-  
+
   def assert_secondbase_connection_tables(expected_tables)
     SecondBase::Base.establish_connection(SecondBase.config)
     assert_connection_tables(SecondBase::Base, expected_tables)
