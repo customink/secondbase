@@ -7,4 +7,5 @@ pkg/
 .Gemfile.lock
 *.gemfile.lock
 test/fixture/db/*.{sql,sqlite3}
+structure.sql
 *.log
