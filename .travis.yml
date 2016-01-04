@@ -12,5 +12,6 @@ install:
   - gem install bundler
   - bundle --version
   - bundle install
+  - appraisal update
 script:
-  - bundle exec rake
+  - appraisal rake test
