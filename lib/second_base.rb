@@ -30,12 +30,14 @@ module SecondBase
     ActiveRecord::Base.establish_connection(config)
     ActiveRecord::Tasks::DatabaseTasks.migrations_paths = SecondBase::Railtie.fullpath + '/migrate'
     ActiveRecord::Tasks::DatabaseTasks.db_dir = SecondBase::Railtie.fullpath
+    ActiveRecord::Migrator.migrations_paths = ActiveRecord::Tasks::DatabaseTasks.migrations_paths
 
     yield
   ensure
     ActiveRecord::Base.configurations = origional_configurations
     ActiveRecord::Tasks::DatabaseTasks.migrations_paths = origional_migrations_path
     ActiveRecord::Tasks::DatabaseTasks.db_dir = origional_db_dir
+    ActiveRecord::Migrator.migrations_paths = ActiveRecord::Tasks::DatabaseTasks.migrations_paths
     ActiveRecord::Base.establish_connection(original_config)
   end
 
