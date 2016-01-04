@@ -14,4 +14,4 @@ install:
   - bundle install
   - appraisal update
 script:
-  - appraisal rake test
+  - rake test
