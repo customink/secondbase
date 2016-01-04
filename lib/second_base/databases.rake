@@ -1,38 +1,29 @@
 namespace :second_base do
-
-  task :load_config do
+  task :migrate do
+    SecondBase.on_base { Rake::Task['db:migrate'].execute }
   end
 
-  task migrate: [:load_config] do
-    SecondBase.on_base do
-      Rake::Task['db:migrate'].execute
-     end
-  end
-
-  task create: [:load_config] do
+  task :create do
     SecondBase.on_base { Rake::Task['db:create'].execute }
   end
 
-  task drop: [:load_config] do
+  task :drop do
     SecondBase.on_base { Rake::Task['db:drop'].execute }
   end
 
   namespace :test do
-
-    task purge: [:load_config] do
+    task :purge do
       SecondBase.on_base { Rake::Task['db:test:purge'].execute }
     end
 
-    task load_schema: [:load_config] do
+    task :load_schema do
       SecondBase.on_base { Rake::Task['db:test:load_schema'].execute }
     end
 
-    task load_structure: [:load_config] do
+    task :load_structure do
       SecondBase.on_base { Rake::Task['db:test:load_structure'].execute }
     end
-
   end
-
 end
 
 Rake::Task['db:create'].enhance { Rake::Task['second_base:create'].invoke }
