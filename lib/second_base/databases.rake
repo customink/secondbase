@@ -21,6 +21,11 @@ namespace :second_base do
     task :purge do
       SecondBase.on_base { Rake::Task['db:test:purge'].execute }
     end
+
+    task :load_schema do
+      SecondBase.on_base { Rake::Task['db:test:load_schema'].execute }
+    end
+
   end
 end
 
@@ -29,3 +34,4 @@ Rake::Task['db:migrate'].enhance { Rake::Task['second_base:migrate'].invoke }
 Rake::Task['db:drop'].enhance { Rake::Task['second_base:drop'].invoke }
 Rake::Task['db:test:purge'].enhance { Rake::Task['second_base:test:purge'].invoke }
 Rake::Task['db:schema:load'].enhance { Rake::Task['second_base:schema:load'].invoke }
+Rake::Task['db:test:load_schema'].enhance { Rake::Task['second_base:test:load_schema'].invoke }

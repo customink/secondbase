@@ -5,6 +5,6 @@ vendor/
 pkg/
 .bundle/
 .Gemfile.lock
-gemfiles/*
+*.gemfile.lock
 test/fixture/db/*.{sql,sqlite3}
 *.log
