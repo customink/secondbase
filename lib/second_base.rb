@@ -23,11 +23,19 @@ module SecondBase
   def self.on_base
     original_config = ActiveRecord::Tasks::DatabaseTasks.current_config
     origional_configurations = ActiveRecord::Base.configurations
+    origional_migrations_path = ActiveRecord::Tasks::DatabaseTasks.migrations_paths
+    origional_db_dir = ActiveRecord::Tasks::DatabaseTasks.db_dir
+    # Override for secondbase
     ActiveRecord::Base.configurations = origional_configurations[config_name]
     ActiveRecord::Base.establish_connection(config)
+    ActiveRecord::Tasks::DatabaseTasks.migrations_paths = SecondBase::Railtie.fullpath + '/migrate'
+    ActiveRecord::Tasks::DatabaseTasks.db_dir = SecondBase::Railtie.fullpath
+
     yield
   ensure
     ActiveRecord::Base.configurations = origional_configurations
+    ActiveRecord::Tasks::DatabaseTasks.migrations_paths = origional_migrations_path
+    ActiveRecord::Tasks::DatabaseTasks.db_dir = origional_db_dir
     ActiveRecord::Base.establish_connection(original_config)
   end
 
