@@ -6,6 +6,9 @@ test:
 secondbase:
 
   test:
-    adapter: sqlite3
-    database: ./db/second.sqlite3
+    adapter: mysql
+    database: 'secondbase_test'
+    username: root
+    password:
+    host: localhost
 

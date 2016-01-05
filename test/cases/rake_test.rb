@@ -3,7 +3,7 @@ require 'test_helper'
 class RakeTest < SecondBase::TestCase
 
   def test_db_migrate
-    refute_dummy_databases
+    rake_db_create
     Dir.chdir(dummy_root) { `rake db:migrate` }
     # First database and schema.
     schema = File.read(dummy_schema)
@@ -23,32 +23,36 @@ class RakeTest < SecondBase::TestCase
 
   def test_db_create
     refute_dummy_databases
-    Dir.chdir(dummy_root) { `rake db:create` }
+    rake_db_create
     assert_dummy_databases
   end
 
   def test_db_drop
-    test_db_create
+    rake_db_create
     Dir.chdir(dummy_root) { `rake db:drop` }
     refute_dummy_databases
   end
 
   def test_db_test_purge
-    test_db_create
-    Dir.chdir(dummy_root) { `rake db:test:purge` }
+    rake_db_create
+    assert_dummy_databases
+    rake_db_purge
     reestablish_connection
     assert_equal [], ActiveRecord::Base.connection.tables
     assert_equal [], SecondBase::Base.connection.tables
   end
 
   def test_db_test_load_schema
-    test_db_test_purge
+    rake_db_create
+    assert_dummy_databases
+    rake_db_purge
     Dir.chdir(dummy_root) { `rake db:migrate` }
     Dir.chdir(dummy_root) { `rake db:test:load_schema` }
     reestablish_connection
     assert_connection_tables ActiveRecord::Base, ['users', 'posts']
     assert_connection_tables SecondBase::Base, ['comments']
   end
+
 
   private
 
@@ -65,4 +69,13 @@ class RakeTest < SecondBase::TestCase
       assert tables.include?(table), message
     end
   end
+
+  def rake_db_create
+    Dir.chdir(dummy_root) { `rake db:create` }
+  end
+
+  def rake_db_purge
+    Dir.chdir(dummy_root) { `rake db:test:purge` }
+  end
+
 end
