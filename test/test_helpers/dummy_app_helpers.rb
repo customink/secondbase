@@ -3,11 +3,6 @@ module SecondBase
 
     extend ActiveSupport::Concern
 
-    included do
-      setup    :delete_dummy_files
-      teardown :delete_dummy_files
-    end
-
     private
 
     def dummy_app
@@ -37,23 +32,26 @@ module SecondBase
     def dummy_secondbase_schema
       dummy_db.join('secondbase', 'schema.rb')
     end
-    
-    def dummy_databases
-      Dir.chdir(dummy_db) { Dir['*.sqlite3'] }
+
+    def dummy_database_sqlite
+      Dir.chdir(dummy_db){ Dir['*.sqlite3'] }.first
     end
 
     def assert_dummy_databases
-      assert_equal ['base.sqlite3', 'second.sqlite3'], dummy_databases
+      assert_equal 'base.sqlite3', dummy_database_sqlite
+      assert_match /secondbase_test/, `mysql -uroot -e "SHOW DATABASES"`
     end
 
     def refute_dummy_databases
-      assert_equal [], dummy_databases
+      assert_nil dummy_database_sqlite
+      refute_match /secondbase_test/, `mysql -uroot -e "SHOW DATABASES"`
     end
 
     def delete_dummy_files
       FileUtils.rm_rf dummy_schema
       FileUtils.rm_rf dummy_secondbase_schema
-      Dir.chdir(dummy_db) { dummy_databases.each { |db| FileUtils.rm_rf(db) } }
+      Dir.chdir(dummy_db) { FileUtils.rm_rf(dummy_database_sqlite) } if dummy_database_sqlite
+      `mysql -uroot -e "DROP DATABASE IF EXISTS secondbase_test"`
     end
 
   end

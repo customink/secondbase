@@ -35,4 +35,3 @@ module Dummy
 end
 
 Dummy::Application.initialize!
-require 'rails/test_help'
