@@ -53,6 +53,16 @@ class RakeTest < SecondBase::TestCase
     assert_connection_tables SecondBase::Base, ['comments']
   end
 
+  def test_abort_if_pending
+    rake_db_create
+    Dir.chdir(dummy_root) { `rake db:migrate` }
+    Dir.chdir(dummy_root) { `rake db:abort_if_pending_migrations` }
+    assert_equal 0, $?.exitstatus
+    FileUtils.touch(dummy_migration)
+    Dir.chdir(dummy_root) { `rake db:abort_if_pending_migrations` }
+    assert_equal 1, $?.exitstatus
+  end
+
 
   private
 
