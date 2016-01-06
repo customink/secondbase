@@ -63,6 +63,17 @@ class RakeTest < SecondBase::TestCase
     assert_equal 1, $?.exitstatus
   end
 
+  def test_db_test_load_structure
+    rake_db_create
+    assert_dummy_databases
+    rake_db_purge
+    Dir.chdir(dummy_root) { `env SCHEMA_FORMAT=sql rake db:migrate` }
+    Dir.chdir(dummy_root) { `rake db:test:load_structure` }
+    reestablish_connection
+    assert_connection_tables ActiveRecord::Base, ['users', 'posts']
+    assert_connection_tables SecondBase::Base, ['comments']
+  end
+
 
   private
 
