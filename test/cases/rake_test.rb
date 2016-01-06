@@ -68,7 +68,6 @@ class RakeTest < SecondBase::TestCase
     assert_dummy_databases
     rake_db_purge
     Dir.chdir(dummy_root) { `env SCHEMA_FORMAT=sql rake db:migrate` }
-    binding.pry
     Dir.chdir(dummy_root) { `rake db:test:load_structure` }
     reestablish_connection
     assert_connection_tables ActiveRecord::Base, ['users', 'posts']
