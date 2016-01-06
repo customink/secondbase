@@ -31,6 +31,9 @@ module Dummy
     # Keep pending test:prepare via pending migrations from running.
     config.active_record.maintain_test_schema = false if ActiveRecord::Base.respond_to?(:maintain_test_schema)
 
+    config.active_record.schema_format = ENV['SCHEMA_FORMAT'] ? :sql : :ruby
+
+
   end
 end
 

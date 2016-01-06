@@ -26,6 +26,7 @@ module SecondBase
     origional_migrations_path = ActiveRecord::Tasks::DatabaseTasks.migrations_paths
     origional_db_dir = ActiveRecord::Tasks::DatabaseTasks.db_dir
     # Override for secondbase
+    ActiveRecord::Tasks::DatabaseTasks.current_config = config
     ActiveRecord::Base.configurations = origional_configurations[config_name]
     ActiveRecord::Base.establish_connection(config)
     ActiveRecord::Tasks::DatabaseTasks.migrations_paths = SecondBase::Railtie.fullpath + '/migrate'
@@ -38,6 +39,7 @@ module SecondBase
     ActiveRecord::Tasks::DatabaseTasks.migrations_paths = origional_migrations_path
     ActiveRecord::Tasks::DatabaseTasks.db_dir = origional_db_dir
     ActiveRecord::Migrator.migrations_paths = ActiveRecord::Tasks::DatabaseTasks.migrations_paths
+    ActiveRecord::Tasks::DatabaseTasks.current_config = original_config
     ActiveRecord::Base.establish_connection(original_config)
   end
 
