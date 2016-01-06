@@ -29,6 +29,10 @@ module SecondBase
       dummy_db.join 'schema.rb'
     end
 
+    def dummy_migration
+      dummy_root.join('db', 'secondbase', 'migrate', '322_throw.rb')
+    end
+
     def dummy_secondbase_schema
       dummy_db.join('secondbase', 'schema.rb')
     end
@@ -51,6 +55,7 @@ module SecondBase
       FileUtils.rm_rf dummy_schema
       FileUtils.rm_rf dummy_secondbase_schema
       Dir.chdir(dummy_db) { FileUtils.rm_rf(dummy_database_sqlite) } if dummy_database_sqlite
+      FileUtils.rm_rf(dummy_migration) if File.exist?(dummy_migration)
       `mysql -uroot -e "DROP DATABASE IF EXISTS secondbase_test"`
     end
 
