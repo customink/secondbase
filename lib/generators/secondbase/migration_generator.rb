@@ -2,7 +2,7 @@ require 'rails/generators'
 require 'rails/generators/migration'
 require 'active_record'
 
-module Secondbase
+module SecondBase
   class MigrationGenerator < Rails::Generators::NamedBase
     include Rails::Generators::Migration
 
@@ -22,7 +22,7 @@ module Secondbase
 
     def create_migration_file
       migration_template 'migration.rb',
-                          "db/migrate/#{SecondBase.config_name}/#{class_name.underscore}.rb",
+                          "db/migrate/#{Railtie.config_key}/#{class_name.underscore}.rb",
                           :assigns => get_local_assigns
     end
 
