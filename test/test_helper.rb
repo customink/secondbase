@@ -1,12 +1,13 @@
-require 'bundler'
-Bundler.require :development, :test
+ENV['RAILS_ENV'] ||= 'test'
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
+require 'bundler/setup'
+Bundler.require :default, :development
 require 'second_base'
 require 'active_support/test_case'
 require 'active_support/testing/autorun'
 require 'dummy_app/init'
 require 'rails/test_help'
-require 'test_helpers/rails_version_helpers'
-require 'test_helpers/dummy_app_helpers'
+Dir['test/test_helpers/*.{rb}'].each { |f| require_relative "../#{f}" }
 
 ActiveSupport.test_order = :random if ActiveSupport.respond_to?(:test_order)
 
@@ -16,11 +17,20 @@ module SecondBase
     self.use_transactional_fixtures = false
 
     include RailsVersionHelpers,
-            DummyAppHelpers
+            DummyAppHelpers,
+            StreamHelpers
 
     setup    :delete_dummy_files
     teardown :delete_dummy_files
 
+    private
+
+    def establish_connection
+      ActiveRecord::Base.establish_connection
+      ActiveRecord::Base.connection
+      SecondBase::Base.establish_connection(SecondBase.config)
+      SecondBase::Base.connection
+    end
 
   end
 end
