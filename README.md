@@ -93,6 +93,18 @@ class User < ActiveRecord::Base
 end
 ```
 
+#### Forced Connections
+
+Sometimes you want to force a model that inherits from `ActiveRecord::Base` to use the `SecondBase::Base` connection. Using the `SecondBase::Forced` module is a great way to accomplish this. By using this module, we do all the work to ensure the connection, management, and pool are properly freedom patched.
+
+We recomend forcing modules using a Rails initializer. Here is an example that forces the [DelayedJob ActiveRecord Backend](https://github.com/collectiveidea/delayed_job_active_record) to use your second DB connection.
+
+```ruby
+# In config/initializers/delayed_job.rb
+Delayed::Backend::ActiveRecord::Job.extend SecondBase::Forced
+```
+
+
 ## Versions
 
 The current master branch is for Rails v4.0.0 and up and. We have older work in previous v1.0 releases which partial work for Rails 3.2 or lower. These old versions are feature incomplete and are not supported.

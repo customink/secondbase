@@ -41,6 +41,38 @@ module SecondBase
       Dir.chdir(dummy_db){ Dir['*.sqlite3'] }.first
     end
 
+    def delete_dummy_files
+      FileUtils.rm_rf dummy_schema
+      FileUtils.rm_rf dummy_secondbase_schema
+      Dir.chdir(dummy_db) { FileUtils.rm_rf(dummy_database_sqlite) } if dummy_database_sqlite
+      FileUtils.rm_rf(dummy_migration) if File.exist?(dummy_migration)
+      `mysql -uroot -e "DROP DATABASE IF EXISTS secondbase_test"`
+    end
+
+    # Runners
+
+    def run_db_create
+      Dir.chdir(dummy_root) { `rake db:create` }
+    end
+
+    def run_db_purge
+      Dir.chdir(dummy_root) { `rake db:test:purge` }
+    end
+
+    def run_db_migrate
+      Dir.chdir(dummy_root) { `rake db:migrate` }
+    end
+
+    def run_db_pending_migrations
+      capture(:stderr) { Dir.chdir(dummy_root) { `rake db:abort_if_pending_migrations` } }
+    end
+
+    def run_db_drop
+      Dir.chdir(dummy_root) { `rake db:drop` }
+    end
+
+    # Assertions
+
     def assert_dummy_databases
       assert_equal 'base.sqlite3', dummy_database_sqlite
       assert_match /secondbase_test/, `mysql -uroot -e "SHOW DATABASES"`
@@ -49,14 +81,6 @@ module SecondBase
     def refute_dummy_databases
       assert_nil dummy_database_sqlite
       refute_match /secondbase_test/, `mysql -uroot -e "SHOW DATABASES"`
-    end
-
-    def delete_dummy_files
-      FileUtils.rm_rf dummy_schema
-      FileUtils.rm_rf dummy_secondbase_schema
-      Dir.chdir(dummy_db) { FileUtils.rm_rf(dummy_database_sqlite) } if dummy_database_sqlite
-      FileUtils.rm_rf(dummy_migration) if File.exist?(dummy_migration)
-      `mysql -uroot -e "DROP DATABASE IF EXISTS secondbase_test"`
     end
 
   end

@@ -23,6 +23,14 @@ module SecondBase
     setup    :delete_dummy_files
     teardown :delete_dummy_files
 
+    private
+
+    def establish_connection
+      ActiveRecord::Base.establish_connection
+      ActiveRecord::Base.connection
+      SecondBase::Base.establish_connection(SecondBase.config)
+      SecondBase::Base.connection
+    end
 
   end
 end

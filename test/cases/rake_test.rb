@@ -37,7 +37,7 @@ class RakeTest < SecondBase::TestCase
     run_db_create
     assert_dummy_databases
     run_db_purge
-    reestablish_connection
+    establish_connection
     assert_equal [], ActiveRecord::Base.connection.tables
     assert_equal [], SecondBase::Base.connection.tables
   end
@@ -48,7 +48,7 @@ class RakeTest < SecondBase::TestCase
     run_db_purge
     run_db_migrate
     Dir.chdir(dummy_root) { `rake db:test:load_schema` }
-    reestablish_connection
+    establish_connection
     assert_connection_tables ActiveRecord::Base, ['users', 'posts']
     assert_connection_tables SecondBase::Base, ['comments']
   end
@@ -67,7 +67,7 @@ class RakeTest < SecondBase::TestCase
     run_db_purge
     Dir.chdir(dummy_root) { `env SCHEMA_FORMAT=sql rake db:migrate` }
     Dir.chdir(dummy_root) { `rake db:test:load_structure` }
-    reestablish_connection
+    establish_connection
     assert_connection_tables ActiveRecord::Base, ['users', 'posts']
     assert_connection_tables SecondBase::Base, ['comments']
   end
@@ -75,38 +75,13 @@ class RakeTest < SecondBase::TestCase
 
   private
 
-  def reestablish_connection
-    ActiveRecord::Base.establish_connection
-    SecondBase::Base.establish_connection(SecondBase.config)
-  end
-
   def assert_connection_tables(model, expected_tables)
-    reestablish_connection
+    establish_connection
     tables = model.connection.tables
     expected_tables.each do |table|
       message = "Expected #{model.name} tables #{tables.inspect} to include #{table.inspect}"
       assert tables.include?(table), message
     end
-  end
-
-  def run_db_create
-    Dir.chdir(dummy_root) { `rake db:create` }
-  end
-
-  def run_db_purge
-    Dir.chdir(dummy_root) { `rake db:test:purge` }
-  end
-
-  def run_db_migrate
-    Dir.chdir(dummy_root) { `rake db:migrate` }
-  end
-
-  def run_db_pending_migrations
-    capture(:stderr) { Dir.chdir(dummy_root) { `rake db:abort_if_pending_migrations` } }
-  end
-
-  def run_db_drop
-    Dir.chdir(dummy_root) { `rake db:drop` }
   end
 
 end
