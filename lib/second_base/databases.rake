@@ -1,16 +1,46 @@
 namespace :db do
   namespace :second_base do
 
-    task :migrate do
-      SecondBase.on_base { Rake::Task['db:migrate'].execute }
-    end
-
     task :create do
       SecondBase.on_base { Rake::Task['db:create'].execute }
     end
 
     task :drop do
       SecondBase.on_base { Rake::Task['db:drop'].execute }
+    end
+
+    task :migrate do
+      SecondBase.on_base { Rake::Task['db:migrate'].execute }
+    end
+
+    namespace :migrate do
+
+      task :redo => ['db:load_config'] do
+        SecondBase.on_base { Rake::Task['db:migrate:redo'].execute }
+      end
+
+      task :reset => ['db:second_base:drop', 'db:second_base:create', 'db:second_base:migrate']
+
+      task :up => ['db:load_config'] do
+        SecondBase.on_base { Rake::Task['db:migrate:up'].execute }
+      end
+
+      task :down => ['db:load_config'] do
+        SecondBase.on_base { Rake::Task['db:migrate:down'].execute }
+      end
+
+      task :status do
+        SecondBase.on_base { Rake::Task['db:migrate:status'].execute }
+      end
+
+    end
+
+    task :rollback => ['db:load_config'] do
+      SecondBase.on_base { Rake::Task['db:rollback'].execute }
+    end
+
+    task :forward => ['db:load_config'] do
+      SecondBase.on_base { Rake::Task['db:forward'].execute }
     end
 
     task :abort_if_pending_migrations do
@@ -53,11 +83,13 @@ namespace :db do
 end
 
 %w{
-  migrate create drop abort_if_pending_migrations
+  create drop
+  migrate abort_if_pending_migrations
   schema:load structure:load
   test:purge test:load_schema test:load_structure
 }.each do |task|
   Rake::Task["db:#{task}"].enhance do
+    Rake::Task["db:load_config"].invoke
     Rake::Task["db:second_base:#{task}"].invoke
   end
 end

@@ -30,41 +30,40 @@ secondbase:
     database: myapp_test
 ```
 
-#### Migrations
+#### Database Tasks
 
-SecondBase migrations are stored in your application's `db/secondbase/migrate` directory. Likewise, SecondBase will also dump your schema/structure into a distinct file within `db/secondbase`. Full support for ActiveRecord's schema format being set to either `:ruby` or `:sql`.
+SecondBase wants to work seamlessly within your Rails application. When it makes sense, we run a mirrored `db:second_base` task for you when you run a standard ActiveRecord base database task. For example:
 
-Migrations can be generated using the `second_base:migration` name. Our generator is built on top of the core ActiveRecord one. This means that SecondBase migrations support whatever arguments is supported by your current Rails version. For example:
+```shell
+$ rake db:create
+```
+
+This will not only create your base development database, but it will also create your second development database as specified by the configuration within the `secondbase` section of your database.yml. Here is a full list of `db:...` tasks that automatically run a mirrored `db:second_base:...` task. Some private tasks, like schema/structure dump and loading, are not listed.
+
+* db:create
+* db:drop
+* db:migrate
+* db:test:purge
+
+Here is a list of supported SecondBase database tasks that have to be run explicitly. These tasks only operate on your SecondBase database. All support every feature that their root `db` counterparts do. For example, using `VERSION=123` to target a specific migration.
+
+* db:second_base:migrate:up
+* db:second_base:migrate:down
+* db:second_base:migrate:reset
+* db:second_base:migrate:redo
+* db:second_base:migrate:status
+* db:second_base:rollback
+* db:second_base:forward
+
+#### Migration Generator
+
+SecondBase migrations are stored in your application's `db/secondbase/migrate` directory. Likewise, SecondBase will also dump your schema/structure file into the `db/secondbase` directory. Full support for ActiveRecord's schema format being set to either `:ruby` or `:sql` is supported.
+
+Migrations can be generated using the `second_base:migration` name. Our generator is a subclass of ActiveRecord's. This means that SecondBase migration generator supports whatever features and arguments is supported by your current Rails version. For example:
 
 ```shell
 $ rails generate second_base:migration CreateWidgetsTable
 $ rails generate second_base:migration AddTitleBodyToPost title:string body:text published:boolean
-```
-
-To run both your application's base and SecondBase migrations, simply run:
-
-```shell
-$ rake db:migrate
-```
-
-If, you only want to migrate your SecondBase database, run:
-
-```shell
-$ rake db:second_base:migrate
-```
-
-Please note that migrating up and migrating down must be done specifically on your first or second database. As usual, to migrate your first database up or down to version 20151203211338, you could run:
-
-```shell
-$ rake db:migrate:up VERSION=20151203211338
-$ rake db:migrate:down VERSION=20151203211338
-```
-
-To migrate your second database up or down to version 20151203211338, you would run:
-
-```shell
-$ rake db:second_base:migrate:up VERSION=20151203211338
-$ rake db:second_base:migrate:down:secondbase VERSION=20151203211338
 ```
 
 #### Models
