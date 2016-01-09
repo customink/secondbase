@@ -38,10 +38,13 @@ SecondBase wants to work seamlessly within your Rails application. When it makes
 $ rake db:create
 ```
 
-This will not only create your base development database, but it will also create your second development database as specified by the configuration within the `secondbase` section of your database.yml. Here is a full list of `db:...` tasks that automatically run a mirrored `db:second_base:...` task. Some private tasks, like schema/structure dump and loading, are not listed.
+This will not only create your base development database, but it will also create your second development database as specified by the configuration within the `secondbase` section of your database.yml. Here is a full list of `db:...` tasks that automatically run a mirrored `db:second_base:...` task. Some private or over lapping tasks, like schema dump/loading or `db:setup`, are not listed.
 
 * db:create
+* db:create:all
 * db:drop
+* db:purge
+* db:purge:all
 * db:migrate
 * db:test:purge
 
@@ -54,6 +57,7 @@ Here is a list of supported SecondBase database tasks that have to be run explic
 * db:second_base:migrate:status
 * db:second_base:rollback
 * db:second_base:forward
+* db:second_base:version
 
 #### Migration Generator
 
