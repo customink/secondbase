@@ -29,10 +29,6 @@ module SecondBase
       dummy_db.join 'schema.rb'
     end
 
-    def dummy_migration
-      dummy_root.join('db', 'secondbase', 'migrate', '322_throw.rb')
-    end
-
     def dummy_secondbase_schema
       dummy_db.join('secondbase', 'schema.rb')
     end
@@ -41,34 +37,41 @@ module SecondBase
       Dir.chdir(dummy_db){ Dir['*.sqlite3'] }.first
     end
 
+    def dummy_migration
+      @dummy_migration ||= begin
+        vers = Time.now.utc.strftime '%Y%m%d%H%M%S'
+        file = dummy_root.join 'db', 'secondbase', 'migrate', "#{vers}_create_foos.rb"
+        migr = %|class CreateFoos < ActiveRecord::Migration ; def change ; create_table(:foos) ; end ; end|
+        File.open(file,'w') { |f| f.write(migr) }
+        {version: vers, file: file}
+      end
+    end
+
     def delete_dummy_files
       FileUtils.rm_rf dummy_schema
       FileUtils.rm_rf dummy_secondbase_schema
+      Dir.chdir(dummy_db) { Dir['**/structure.sql'].each { |structure| FileUtils.rm_rf(structure) } }
       Dir.chdir(dummy_db) { FileUtils.rm_rf(dummy_database_sqlite) } if dummy_database_sqlite
-      FileUtils.rm_rf(dummy_migration) if File.exist?(dummy_migration)
+      FileUtils.rm_rf(dummy_migration[:file]) if @dummy_migration
       `mysql -uroot -e "DROP DATABASE IF EXISTS secondbase_test"`
     end
 
     # Runners
 
-    def run_db_create
-      Dir.chdir(dummy_root) { `rake db:create` }
+    def run_cmd
+      'rake'
     end
 
-    def run_db_purge
-      Dir.chdir(dummy_root) { `rake db:test:purge` }
+    def run_db(args, stream=:stdout)
+      capture(stream) do
+        Dir.chdir(dummy_root) { Kernel.system "#{run_cmd} db:#{args}" }
+      end
     end
 
-    def run_db_migrate
-      Dir.chdir(dummy_root) { `rake db:migrate` }
-    end
-
-    def run_db_pending_migrations
-      capture(:stderr) { Dir.chdir(dummy_root) { `rake db:abort_if_pending_migrations` } }
-    end
-
-    def run_db_drop
-      Dir.chdir(dummy_root) { `rake db:drop` }
+    def run_secondbase(args, stream=:stdout)
+      capture(stream) do
+        Dir.chdir(dummy_root) { Kernel.system "#{run_cmd} db:second_base:#{args}" }
+      end
     end
 
     # Assertions

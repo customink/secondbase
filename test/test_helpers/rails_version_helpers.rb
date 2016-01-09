@@ -7,16 +7,22 @@ module SecondBase
 
     private
 
-    def rails_40?
-      Rails.version =~ /4\.0\.\d/
+    def rails_version
+      Rails.version.to(2)
     end
 
-    def rails_41?
-      Rails.version =~ /4\.1\.\d/
-    end
+    ['4.0', '4.1', '4.2', '5.0'].each do |v|
 
-    def rails_42?
-      Rails.version =~ /4\.2\.\d/
+      vm = v.sub '.', ''
+
+      define_method :"rails_#{vm}?" do
+        rails_version == v
+      end
+
+      define_method :"rails_#{vm}_up?" do
+        rails_version >= v
+      end
+
     end
 
   end

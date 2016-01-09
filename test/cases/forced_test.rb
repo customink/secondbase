@@ -3,8 +3,8 @@ require 'test_helper'
 class ForcedTest < SecondBase::TestCase
 
   setup do
-    run_db_create
-    run_db_migrate
+    run_db :create
+    run_db :migrate
     establish_connection
   end
 
