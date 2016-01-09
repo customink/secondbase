@@ -8,10 +8,48 @@ class RakeTest < SecondBase::TestCase
     assert_dummy_databases
   end
 
+  def test_db_create_all
+    refute_dummy_databases
+    run_db 'create:all'
+    assert_dummy_databases
+  end
+
+  def test_db_setup
+    run_db :create
+    run_db :migrate
+    assert_dummy_databases
+    run_db :drop
+    refute_dummy_databases
+    run_db :setup
+    assert_dummy_databases
+  end
+
   def test_db_drop
     run_db :create
     run_db :drop
     refute_dummy_databases
+  end
+
+  def test_db_purge_all
+    skip 'Rails 4.2 & Up' unless rails_42_up?
+    run_db :create
+    run_db :migrate
+    assert_dummy_databases
+    run_db 'purge:all'
+    establish_connection
+    assert_equal [], ActiveRecord::Base.connection.tables
+    assert_equal [], SecondBase::Base.connection.tables
+  end
+
+  def test_db_purge
+    skip 'Rails 4.2 & Up' unless rails_42_up?
+    run_db :create
+    run_db :migrate
+    assert_dummy_databases
+    run_db :purge
+    establish_connection
+    assert_equal [], ActiveRecord::Base.connection.tables
+    assert_equal [], SecondBase::Base.connection.tables
   end
 
   def test_db_migrate
@@ -156,6 +194,14 @@ class RakeTest < SecondBase::TestCase
     establish_connection
     assert_connection_tables ActiveRecord::Base, ['users', 'posts']
     assert_connection_tables SecondBase::Base, ['comments']
+  end
+
+  def test_secondbase_version
+    run_db :create
+    assert_match /version: 0/, run_secondbase(:version)
+    run_db :migrate
+    assert_match /version: 20141214142700/, run_db(:version)
+    assert_match /version: 20151202075826/, run_secondbase(:version)
   end
 
 

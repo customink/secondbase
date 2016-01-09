@@ -1,12 +1,28 @@
 namespace :db do
   namespace :second_base do
 
+    namespace :create do
+      task :all do
+        SecondBase.on_base { Rake::Task['db:create:all'].execute }
+      end
+    end
+
     task :create do
       SecondBase.on_base { Rake::Task['db:create'].execute }
     end
 
     task :drop do
       SecondBase.on_base { Rake::Task['db:drop'].execute }
+    end
+
+    namespace :purge do
+      task :all do
+        SecondBase.on_base { Rake::Task['db:purge:all'].execute }
+      end
+    end
+
+    task :purge do
+      SecondBase.on_base { Rake::Task['db:purge'].execute }
     end
 
     task :migrate do
@@ -47,6 +63,10 @@ namespace :db do
       SecondBase.on_base { Rake::Task['db:abort_if_pending_migrations'].execute }
     end
 
+    task :version => ['db:load_config'] do
+      SecondBase.on_base { Rake::Task['db:version'].execute }
+    end
+
     namespace :schema do
 
       task :load do
@@ -83,13 +103,15 @@ namespace :db do
 end
 
 %w{
-  create drop
+  create:all create drop purge:all purge
   migrate abort_if_pending_migrations
   schema:load structure:load
   test:purge test:load_schema test:load_structure
-}.each do |task|
-  Rake::Task["db:#{task}"].enhance do
+}.each do |name|
+  task = Rake::Task["db:#{name}"] rescue nil
+  next unless task
+  task.enhance do
     Rake::Task["db:load_config"].invoke
-    Rake::Task["db:second_base:#{task}"].invoke
+    Rake::Task["db:second_base:#{name}"].invoke
   end
 end
