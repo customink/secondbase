@@ -50,7 +50,7 @@ $ rake db:migrate
 If, you only want to migrate your SecondBase database, run:
 
 ```shell
-$ rake second_base:migrate
+$ rake db:second_base:migrate
 ```
 
 Please note that migrating up and migrating down must be done specifically on your first or second database. As usual, to migrate your first database up or down to version 20151203211338, you could run:
@@ -63,8 +63,8 @@ $ rake db:migrate:down VERSION=20151203211338
 To migrate your second database up or down to version 20151203211338, you would run:
 
 ```shell
-$ rake second_base:migrate:up VERSION=20151203211338
-$ rake second_base:migrate:down:secondbase VERSION=20151203211338
+$ rake db:second_base:migrate:up VERSION=20151203211338
+$ rake db:second_base:migrate:down:secondbase VERSION=20151203211338
 ```
 
 #### Models
