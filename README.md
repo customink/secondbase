@@ -10,67 +10,61 @@ SecondBase enables Rails to work with, and manage, a second database. As a devel
 
 ## Usage
 
-Configure your database.yml to define your SecondBase:
+Customize your database.yml to include a `secondbase` config key. All SecondBase configurations per Rails environment for your second database will go under this config key.
 
 ```yaml
-# Your normal rails definitions...
+# Default configurations:
 development:
-  adapter: mysql  #postgres, oracle, etc
-  encoding: utf8
-  database: development
-
+  adapter: sqlserver
+  database: myapp_development
 test:
-  adapter: mysql  #postgres, oracle, etc
-  encoding: utf8
-  database: test
-
-# Your secondbase database configurations...
+  adapter: sqlserver
+  database: myapp_test
+# SecondBase configurations:
 secondbase:
   development:
     adapter: mysql
-    encoding: utf8
-    database: secondbase_development
-
+    database: myapp_development
   test:
     adapter: mysql
-    encoding: utf8
-    database: secondbase_test
+    database: myapp_test
 ```
 
 #### Migrations
 
-SecondBase comes with a generator to assist in managing your migrations
+SecondBase migrations are stored in your application's `db/secondbase/migrate` directory. Likewise, SecondBase will also dump your schema/structure into a distinct file within `db/secondbase`. Full support for ActiveRecord's schema format being set to either `:ruby` or `:sql`.
 
-```
-$ rails generate secondbase:migration CreateWidgetsTable
-```
+Migrations can be generated using the `second_base:migration` name. Our generator is built on top of the core ActiveRecord one. This means that SecondBase migrations support whatever arguments is supported by your current Rails version. For example:
 
-The generator will organize your second database migrations alongside of your primary database. The above command will generate the file `db/secondbase/migrate/20151203211338_create_widgets_table.rb`
-
-To run your migrations, simply run:
-
-```
-rake db:migrate
+```shell
+$ rails generate second_base:migration CreateWidgetsTable
+$ rails generate second_base:migration AddTitleBodyToPost title:string body:text published:boolean
 ```
 
-This will migrate your first and second databases. If, for some reason, you only want to migrate your second database, run:
+To run both your application's base and SecondBase migrations, simply run:
 
+```shell
+$ rake db:migrate
 ```
-rake db:migrate:secondbase
+
+If, you only want to migrate your SecondBase database, run:
+
+```shell
+$ rake second_base:migrate
 ```
 
 Please note that migrating up and migrating down must be done specifically on your first or second database. As usual, to migrate your first database up or down to version 20151203211338, you could run:
 
-```
+```shell
 $ rake db:migrate:up VERSION=20151203211338
 $ rake db:migrate:down VERSION=20151203211338
 ```
 
 To migrate your second database up or down to version 20151203211338, you would run:
 
-```
-$ rake db:migrate:up:secondbase VERSION=20151203211338
-$ rake db:migrate:down:secondbase VERSION=20151203211338
+```shell
+$ rake second_base:migrate:up VERSION=20151203211338
+$ rake second_base:migrate:down:secondbase VERSION=20151203211338
 ```
 
 #### Models
@@ -105,6 +99,18 @@ Delayed::Backend::ActiveRecord::Job.extend SecondBase::Forced
 ActiveRecord::SessionStore::Session.extend SecondBase::Forced
 ```
 
+#### Configurations
+
+All SecondBase railtie settings are best done in a `config/initializers/secondbase.rb` file. We support the following configurations:
+
+```ruby
+config.second_base.path        # Default: 'db/secondbase'
+config.second_base.config_key  # Default: 'secondbase'
+```
+
+* `path` - Used as location for migrations & schema. Path is relative to application root.
+* `config_key` - The key to in database.yml/configurations to search for SecondBase configs.
+
 
 ## Versions
 
@@ -126,15 +132,4 @@ If you want to run the tests for a specific Rails version, use one of the apprai
 ```shell
 $ bundle exec appraisal rails41 rake test
 ```
-
-
-## TODO
-
-* Migration generator in Rails 3.x needs support for attribute generation (similar to rails generate migration). For example:
-
-```
-$ rails generate secondbase:migration AddTitleBodyToPost title:string body:text published:boolean
-```
-
-Fix rake db:fixtures:load is currently broken. Like many other things I have fixed, it assumes you only one a single database and attempts to load all fixtures into it. I don't believe we can get away with alias chaining this one, I think (like the Fixtures class), we'll have to freedom patch it.
 
