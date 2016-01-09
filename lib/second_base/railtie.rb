@@ -16,6 +16,14 @@ module SecondBase
       load 'second_base/databases.rake'
     end
 
+    generators do
+      require 'rails/second_base/generators/migration_generator'
+    end
+
+    def config_path
+      Rails.application.config.second_base.path
+    end
+
     def config_key
       Rails.application.config.second_base.config_key
     end
