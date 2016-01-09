@@ -1,5 +1,8 @@
 module SecondBase
 
+  mattr_accessor :is_on_base
+  self.is_on_base = false
+
   def self.on_base
     original_config = ActiveRecord::Tasks::DatabaseTasks.current_config
     original_configurations = ActiveRecord::Base.configurations
@@ -11,6 +14,7 @@ module SecondBase
     ActiveRecord::Tasks::DatabaseTasks.migrations_paths = SecondBase::Railtie.fullpath('migrate')
     ActiveRecord::Tasks::DatabaseTasks.db_dir = SecondBase::Railtie.fullpath
     ActiveRecord::Migrator.migrations_paths = ActiveRecord::Tasks::DatabaseTasks.migrations_paths
+    self.is_on_base = true
     yield
   ensure
     ActiveRecord::Base.configurations = original_configurations
@@ -19,6 +23,7 @@ module SecondBase
     ActiveRecord::Migrator.migrations_paths = ActiveRecord::Tasks::DatabaseTasks.migrations_paths
     ActiveRecord::Tasks::DatabaseTasks.current_config = original_config
     ActiveRecord::Base.establish_connection(original_config)
+    self.is_on_base = false
   end
 
 end
