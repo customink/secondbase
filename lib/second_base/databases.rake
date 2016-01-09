@@ -29,7 +29,7 @@ namespace :db do
         SecondBase.on_base { Rake::Task['db:migrate:down'].execute }
       end
 
-      task :status do
+      task :status => ['db:load_config'] do
         SecondBase.on_base { Rake::Task['db:migrate:status'].execute }
       end
 

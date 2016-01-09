@@ -50,6 +50,7 @@ module SecondBase
     def delete_dummy_files
       FileUtils.rm_rf dummy_schema
       FileUtils.rm_rf dummy_secondbase_schema
+      Dir.chdir(dummy_db) { Dir['**/structure.sql'].each { |structure| FileUtils.rm_rf(structure) } }
       Dir.chdir(dummy_db) { FileUtils.rm_rf(dummy_database_sqlite) } if dummy_database_sqlite
       FileUtils.rm_rf(dummy_migration[:file]) if @dummy_migration
       `mysql -uroot -e "DROP DATABASE IF EXISTS secondbase_test"`
