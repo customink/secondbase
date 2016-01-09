@@ -19,5 +19,17 @@ class OnBaseTest < SecondBase::TestCase
     refute SecondBase.is_on_base
   end
 
+  def test_on_base_nested
+    refute SecondBase.is_on_base
+    SecondBase.on_base do
+      assert SecondBase.is_on_base
+      SecondBase.on_base do
+        assert SecondBase.is_on_base
+      end
+      assert SecondBase.is_on_base
+    end
+    refute SecondBase.is_on_base
+  end
+
 
 end
