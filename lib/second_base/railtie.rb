@@ -6,10 +6,8 @@ module SecondBase
     config.second_base.config_key = 'secondbase'
 
     config.after_initialize do |app|
-      path = config.second_base.path
-      pdir = app.root.join(path)
-      FileUtils.mkdir(pdir) unless File.directory?(pdir)
-      app.paths.add(path)
+      secondbase_dir = app.root.join(config.second_base.path)
+      FileUtils.mkdir(secondbase_dir) unless File.directory?(secondbase_dir)
     end
 
     rake_tasks do
@@ -21,16 +19,16 @@ module SecondBase
     end
 
     def config_path
-      Rails.application.config.second_base.path
+      config.second_base.path
     end
 
     def config_key
-      Rails.application.config.second_base.config_key
+      config.second_base.config_key
     end
 
     def fullpath(extra=nil)
-      path = Rails.application.config.paths[config.second_base.path].first
-      extra ? File.join(path, extra) : path
+      path = Rails.root.join(config.second_base.path)
+      (extra ? path.join(path, extra) : path).to_s
     end
 
   end
