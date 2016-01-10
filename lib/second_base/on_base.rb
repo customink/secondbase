@@ -1,6 +1,6 @@
 module SecondBase
 
-  mattr_accessor :is_on_base
+  mattr_accessor :is_on_base, instance_accessor: false
   self.is_on_base = false
 
   def self.on_base
