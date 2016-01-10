@@ -103,6 +103,10 @@ namespace :db do
         SecondBase.on_base { Rake::Task['db:test:load_structure'].execute }
       end
 
+      task :prepare do
+        SecondBase.on_base { Rake::Task['db:test:prepare'].execute }
+      end
+
     end
 
   end
@@ -112,7 +116,7 @@ end
   create:all create drop drop:all purge:all purge
   migrate abort_if_pending_migrations
   schema:load structure:load
-  test:purge test:load_schema test:load_structure
+  test:purge test:load_schema test:load_structure test:prepare
 }.each do |name|
   task = Rake::Task["db:#{name}"] rescue nil
   next unless task

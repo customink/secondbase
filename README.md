@@ -47,6 +47,7 @@ This will not only create your base development database, but it will also creat
 * db:purge:all
 * db:migrate
 * db:test:purge
+* db:test:prepare
 
 Not all base database tasks make sense to run a mirrored SecondBase task. These include tasks that move a single migration up/down, reporting on your database's current status/version, and others. These tasks have to be run explicitly and only operate on your SecondBase database. Each support any feature that their matching `:db` task has. For example, using `VERSION=123` to target a specific migration.
 
@@ -94,6 +95,17 @@ We recomend forcing modules using a Rails initializer. This example below forces
 # In config/initializers/second_base.rb
 Delayed::Backend::ActiveRecord::Job.extend SecondBase::Forced
 ActiveRecord::SessionStore::Session.extend SecondBase::Forced
+```
+
+#### Testing & DB Synchronization
+
+Rails 4.2 brought about a new way to keep your test database in sync by checking schema migrations. Where previously forcing a full test database schema load, Rails 4.2 and up is able to run your tests much faster. In order for SecondBase to take advantage of this, you will need to include our test help file directly following the Rails one. Open your `test_helper.rb` and add our `second_base/test_help` after `rails/test_help`.
+
+```ruby
+ENV["RAILS_ENV"] = "test"
+require File.expand_path('../../config/environment', __FILE__)
+require 'rails/test_help'
+require 'second_base/test_help'
 ```
 
 #### Configurations
