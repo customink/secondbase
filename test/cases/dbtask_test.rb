@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class RakeTest < SecondBase::TestCase
+class DbTaskTest < SecondBase::TestCase
 
   def test_db_create
     refute_dummy_databases
