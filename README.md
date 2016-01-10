@@ -3,14 +3,13 @@
 [![Gem Version](https://badge.fury.io/rb/secondbase.png)](http://badge.fury.io/rb/secondbase)
 [![Build Status](https://secure.travis-ci.org/customink/secondbase.png)](http://travis-ci.org/customink/secondbase)
 
-SecondBase adds a second database to your application. While Rails enables you to establish connections to as many external databases as you like, Rails can only manage a single database with it's migration and testing tasks.
 
-SecondBase enables Rails to work with, and manage, a second database. As a developer, you should not even realize a second database is in play. Core tasks such as `db:create`, `db:migrate`, and `test` will continue to work seamlessly with both databases.
+Seamless second database integration for Rails. SecondBase provides support for Rails to manage dual databases by focusing on ActiveRecord tasks that create, migrate, and test your databases.
 
 
 ## Usage
 
-Customize your database.yml to include a `secondbase` config key. All SecondBase configurations per Rails environment for your second database will go under this config key.
+To get started with your new second database, update your database.yml to include a `secondbase` config key. All SecondBase configurations per Rails environment go under this config key.
 
 ```yaml
 # Default configurations:
@@ -32,13 +31,13 @@ secondbase:
 
 #### Database Tasks
 
-SecondBase wants to work seamlessly within your Rails application. When it makes sense, we run a mirrored `db:second_base` task for you when you run a standard ActiveRecord base database task. For example:
+SecondBase aims to work seamlessly within your Rails application. When it makes sense, we run a mirrored `db:second_base` task for matching ActiveRecord base database task. For example:
 
 ```shell
 $ rake db:create
 ```
 
-This will not only create your base development database, but it will also create your second development database as specified by the configuration within the `secondbase` section of your database.yml. Here is a full list of `db:...` tasks that automatically run a mirrored `db:second_base:...` task. Some private or over lapping tasks, like schema dump/loading or `db:setup`, are not listed.
+This will not only create your base development database, but it will also create your second database as specified by the configuration within the `:secondbase` section of your database.yml. Below is a complete list of `:db` tasks that automatically run a mirrored `:db:second_base` task. Some private or over lapping tasks, like schema dump/loading or `db:setup`, are not listed.
 
 * db:create
 * db:create:all
@@ -48,7 +47,7 @@ This will not only create your base development database, but it will also creat
 * db:migrate
 * db:test:purge
 
-Here is a list of supported SecondBase database tasks that have to be run explicitly. These tasks only operate on your SecondBase database. All support every feature that their root `db` counterparts do. For example, using `VERSION=123` to target a specific migration.
+Not all base database tasks make sense to run a mirrored SecondBase task. These include tasks that move a single migration up/down, reporting on your database's current status/version, and others. These tasks have to be run explicitly and only operate on your SecondBase database. Each support any feature that their matching `:db` task has. For example, using `VERSION=123` to target a specific migration.
 
 * db:second_base:migrate:up
 * db:second_base:migrate:down
@@ -63,28 +62,22 @@ Here is a list of supported SecondBase database tasks that have to be run explic
 
 SecondBase migrations are stored in your application's `db/secondbase/migrate` directory. Likewise, SecondBase will also dump your schema/structure file into the `db/secondbase` directory. Full support for ActiveRecord's schema format being set to either `:ruby` or `:sql` is supported.
 
-Migrations can be generated using the `second_base:migration` name. Our generator is a subclass of ActiveRecord's. This means that SecondBase migration generator supports whatever features and arguments is supported by your current Rails version. For example:
+Migrations can be generated using the `second_base:migration` name. Our generator is a subclass of ActiveRecord's. This means the SecondBase migration generator supports whatever features and arguments are supported by your current Rails version. For example:
 
 ```shell
 $ rails generate second_base:migration CreateWidgetsTable
-$ rails generate second_base:migration AddTitleBodyToPost title:string body:text published:boolean
+$ rails generate second_base:migration AddTitleBodyToPost title:string body:text
 ```
 
 #### Models
 
-Every model in your project that extends ActiveRecord::Base will point to the database defined by Rails.env. This is the default Rails behavior and should be of no surprise to you. So how do we point our models to the second database? SecondBase offers a base model that you can simply extend:
+Any model who's table resides in your second database needs to inherit from `SecondBase::Base`. ActiveRecord associations will still work between your base ActiveRecord and SecondBase models!
 
 ```ruby
-require 'secondbase/model'
-
 class Widget < SecondBase::Base
 
 end
-```
 
-You're Widget model is now pointing to your second database table 'widgets'. ActiveRecord associations will still work between your Firstbase and SecondBase models!
-
-```ruby
 class User < ActiveRecord::Base
   has_many :widgets
 end
@@ -94,7 +87,7 @@ end
 
 Sometimes you want to force a model that inherits from `ActiveRecord::Base` to use the `SecondBase::Base` connection. Using the `SecondBase::Forced` module is a great way to accomplish this. By using this module, we do all the work to ensure the connection, management, and pool are properly freedom patched.
 
-We recomend forcing modules using a Rails initializer. This example forces both the [DelayedJob ActiveRecord Backend](https://github.com/collectiveidea/delayed_job_active_record) and ActiveRecord session store to use your second DB connection.
+We recomend forcing modules using a Rails initializer. This example below forces both the [DelayedJob ActiveRecord Backend](https://github.com/collectiveidea/delayed_job_active_record) and ActiveRecord session store to use your SecondBase database.
 
 ```ruby
 # In config/initializers/second_base.rb

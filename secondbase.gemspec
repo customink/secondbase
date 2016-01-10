@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors       = ['Karle Durante', 'Hunter Madison', 'Ken Collins']
   s.email         = ['kdurante@customink.com', 'hunterglenmadison@icloud.com', 'ken@metaskills.net']
   s.homepage      = 'http://github.com/customink/secondbase'
-  s.summary       = 'Allow Rails manage second database in your projects'
-  s.description   = 'SecondBase provides support to Rails to create a homogeneous environment for a dual database project. Using tasks already familiar to you, this gem enables Rails to work with two primary databases, instead of just one.'
+  s.summary       = 'Seamless second database integration for Rails.'
+  s.description   = "SecondBase provides support for Rails to manage dual databases by focusing on ActiveRecord tasks that create, migrate, and test your databases."
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
