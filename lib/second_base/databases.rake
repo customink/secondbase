@@ -11,6 +11,12 @@ namespace :db do
       SecondBase.on_base { Rake::Task['db:create'].execute }
     end
 
+    namespace :drop do
+      task :all do
+        SecondBase.on_base { Rake::Task['db:drop:all'].execute }
+      end
+    end
+
     task :drop do
       SecondBase.on_base { Rake::Task['db:drop'].execute }
     end
@@ -103,7 +109,7 @@ namespace :db do
 end
 
 %w{
-  create:all create drop purge:all purge
+  create:all create drop drop:all purge:all purge
   migrate abort_if_pending_migrations
   schema:load structure:load
   test:purge test:load_schema test:load_structure

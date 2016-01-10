@@ -30,6 +30,12 @@ class RakeTest < SecondBase::TestCase
     refute_dummy_databases
   end
 
+  def test_db_drop_all
+    run_db :create
+    run_db 'drop:all'
+    refute_dummy_databases
+  end
+
   def test_db_purge_all
     skip 'Rails 4.2 & Up' unless rails_42_up?
     run_db :create

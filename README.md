@@ -42,6 +42,7 @@ This will not only create your base development database, but it will also creat
 * db:create
 * db:create:all
 * db:drop
+* db:drop:all
 * db:purge
 * db:purge:all
 * db:migrate
