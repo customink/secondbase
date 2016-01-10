@@ -1,5 +1,6 @@
 
 ![SecondBase Logo](https://cloud.githubusercontent.com/assets/2381/12219457/5a5aab4e-b712-11e5-92e1-de6487aa0809.png)
+<hr>
 Seamless second database integration for Rails. SecondBase provides support for Rails to manage dual databases by focusing on ActiveRecord tasks that create, migrate, and test your databases.
 
 [![Gem Version](https://badge.fury.io/rb/secondbase.png)](http://badge.fury.io/rb/secondbase)
