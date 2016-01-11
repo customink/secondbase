@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.email         = ['kdurante@customink.com', 'hunterglenmadison@icloud.com', 'ken@metaskills.net']
   s.homepage      = 'http://github.com/customink/secondbase'
   s.summary       = 'Seamless second database integration for Rails.'
-  s.description   = "SecondBase provides support for Rails to manage dual databases by focusing on ActiveRecord tasks that create, migrate, and test your databases."
+  s.description   = "SecondBase provides support for Rails to manage dual databases by extending ActiveRecord tasks that create, migrate, and test your databases."
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
