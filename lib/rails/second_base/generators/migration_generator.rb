@@ -1,5 +1,4 @@
 require 'rails/generators'
-require 'rails/generators/rails/migration/migration_generator'
 require 'rails/generators/active_record'
 require 'rails/generators/active_record/migration/migration_generator'
 
@@ -9,6 +8,7 @@ module SecondBase
     source_root ActiveRecord::Generators::MigrationGenerator.source_root
 
     def self.desc
+      require 'rails/generators/rails/migration/migration_generator'
       Rails::Generators::MigrationGenerator.desc
     end
 

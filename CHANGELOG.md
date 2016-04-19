@@ -3,6 +3,12 @@
 
 Please follow the format set down in http://keepachangelog.com
 
+## v1.0.1
+
+#### Fixed
+
+* Fix base Rails migration generator. Fixes #25.
+
 
 ## v1.0
 

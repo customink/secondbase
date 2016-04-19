@@ -2,7 +2,10 @@ require 'test_helper'
 
 class GeneratorTest < SecondBase::TestCase
 
-  teardown { generated_migration_delete }
+  teardown do
+    generated_migration_delete
+    generated_migration_base_delete
+  end
 
   def test_initialization_via_help
     output = Dir.chdir(dummy_root) { `rails g -h` }
@@ -23,6 +26,14 @@ class GeneratorTest < SecondBase::TestCase
     assert_match %r{t.integer :count}, migration
   end
 
+  def test_base_migration_generator
+    output = Dir.chdir(dummy_root) { `rails g migration AddBaseColumn` }
+    assert_match %r{create.*db/migrate/.*add_base_column\.rb}, output
+    migration = generated_migration_base_data
+    assert_match %r{class AddBaseColumn}, migration
+    assert_match %r{def change}, migration
+  end
+
 
   private
 
@@ -36,6 +47,18 @@ class GeneratorTest < SecondBase::TestCase
 
   def generated_migration_delete
     FileUtils.rm_rf(generated_migration) if generated_migration
+  end
+
+  def generated_migration_base
+    Dir["#{dummy_db}/migrate/*add_base*.{rb}"].first
+  end
+
+  def generated_migration_base_data
+    generated_migration_base ? File.read(generated_migration_base) : ''
+  end
+
+  def generated_migration_base_delete
+    FileUtils.rm_rf(generated_migration_base) if generated_migration_base
   end
 
 end
