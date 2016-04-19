@@ -1,5 +1,4 @@
 require 'rails/generators'
-require 'rails/generators/rails/migration/migration_generator'
 require 'rails/generators/active_record'
 require 'rails/generators/active_record/migration/migration_generator'
 
