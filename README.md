@@ -7,7 +7,7 @@ Seamless second database integration for Rails. SecondBase provides support for 
 * [Rails Multi-Database Best Practices Roundup](http://technology.customink.com/blog/2015/06/22/rails-multi-database-best-practices-roundup/)
 
 [![Gem Version](https://badge.fury.io/rb/secondbase.png)](http://badge.fury.io/rb/secondbase)
-[![Build Status](https://secure.travis-ci.org/customink/secondbase.png)](http://travis-ci.org/customink/secondbase)
+[![Build Status](https://travis-ci.org/customink/secondbase.svg?branch=master)](https://travis-ci.org/customink/secondbase)
 
 
 ## Usage
