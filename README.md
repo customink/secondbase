@@ -124,6 +124,34 @@ config.second_base.config_key  # Default: 'secondbase'
 * `config_key` - The key to in database.yml/configurations to search for SecondBase configs.
 
 
+## Twelve-Factor & DATABASE_URL
+
+We love the [Twelve Factors](http://12factor.net) principals and using tools like Dotenv with Rails. Using SecondBase does not mean you have to abandon these best practices. You will however need to take advantage of a [new feature](https://github.com/rails/rails/pull/14633) in Rails 4.1 and upward that allows database.yml configurations to leverage a `:url` key that will resolve and merge the same connection string format consumed by `DATABASE_URL`. For example: 
+
+```yaml
+development:
+  database: encom-pg_development
+  url: <%= ENV.fetch('DATABASE_URL') %>
+test:
+  database: encom-pg_test
+  url: <%= ENV.fetch('DATABASE_URL') %>
+production:
+  url: <%= ENV.fetch('DATABASE_URL') %>
+
+secondbase:
+  development:
+    database: encom-mysql_development
+    url: <%= ENV.fetch('DATABASE_URL_SECONDBASE') %>
+  test:
+    database: encom-mysql_test
+    url: <%= ENV.fetch('DATABASE_URL_SECONDBASE') %>
+  production:
+    url: <%= ENV.fetch('DATABASE_URL_SECONDBASE') %>
+```
+
+There are many ways to use Dotenv and enviornment variables. This is only one example and we hope it helps you decide on which is best for you.
+
+
 ## Versions
 
 The current master branch is for Rails v4.0.0 and up and. We have older work in previous v1.0 releases which partial work for Rails 3.2 or lower. These old versions are feature incomplete and are not supported.
