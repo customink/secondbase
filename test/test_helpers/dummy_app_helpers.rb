@@ -82,12 +82,12 @@ module SecondBase
 
     def assert_dummy_databases
       assert_equal 'base.sqlite3', dummy_database_sqlite
-      assert_match /secondbase_test/, `mysql -uroot -e "SHOW DATABASES"`
+      assert_match(/secondbase_test/, `mysql -uroot -e "SHOW DATABASES"`)
     end
 
     def refute_dummy_databases
       assert_nil dummy_database_sqlite
-      refute_match /secondbase_test/, `mysql -uroot -e "SHOW DATABASES"`
+      refute_match(/secondbase_test/, `mysql -uroot -e "SHOW DATABASES"`)
     end
 
   end

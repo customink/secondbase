@@ -9,7 +9,7 @@ class GeneratorTest < SecondBase::TestCase
 
   def test_initialization_via_help
     output = Dir.chdir(dummy_root) { `rails g -h` }
-    assert_match /second_base\:migration/, output
+    assert_match(/second_base\:migration/, output)
   end
 
   def test_description_uses_rails_base

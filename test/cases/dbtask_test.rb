@@ -78,12 +78,12 @@ class DbTaskTest < SecondBase::TestCase
   def test_secondbase_migrate_updown
     run_db :create
     run_db :migrate
-    assert_match /no migration.*20151202075826/i, run_db('migrate:down VERSION=20151202075826', :stderr)
+    assert_match(/no migration.*20151202075826/i, run_db('migrate:down VERSION=20151202075826', :stderr))
     run_secondbase 'migrate:down VERSION=20151202075826'
     secondbase_schema = File.read(dummy_secondbase_schema)
     refute_match %r{version: 20151202075826}, secondbase_schema
     refute_match %r{create_table "comments"}, secondbase_schema
-    assert_match /no migration.*20151202075826/i, run_db('migrate:up VERSION=20151202075826', :stderr)
+    assert_match(/no migration.*20151202075826/i, run_db('migrate:up VERSION=20151202075826', :stderr))
     run_secondbase 'migrate:up VERSION=20151202075826'
     secondbase_schema = File.read(dummy_secondbase_schema)
     assert_match %r{version: 20151202075826}, secondbase_schema
@@ -183,8 +183,8 @@ class DbTaskTest < SecondBase::TestCase
     version = dummy_migration[:version]
     capture(:stderr) do
       stdout = run_db :abort_if_pending_migrations
-      assert_match /1 pending migration/, stdout
-      assert_match /#{version}/, stdout
+      assert_match(/1 pending migration/, stdout)
+      assert_match(/#{version}/, stdout)
     end
   end
 
@@ -201,10 +201,10 @@ class DbTaskTest < SecondBase::TestCase
 
   def test_secondbase_version
     run_db :create
-    assert_match /version: 0/, run_secondbase(:version)
+    assert_match(/version: 0/, run_secondbase(:version))
     run_db :migrate
-    assert_match /version: 20141214142700/, run_db(:version)
-    assert_match /version: 20151202075826/, run_secondbase(:version)
+    assert_match(/version: 20141214142700/, run_db(:version))
+    assert_match(/version: 20151202075826/, run_secondbase(:version))
   end
 
 
