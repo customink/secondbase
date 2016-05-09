@@ -124,7 +124,9 @@ config.second_base.config_key  # Default: 'secondbase'
 * `config_key` - The key to in database.yml/configurations to search for SecondBase configs.
 
 
-## Twelve-Factor & DATABASE_URL
+## Advanced Usage
+
+#### Twelve-Factor & DATABASE_URL
 
 We love the [Twelve Factors](http://12factor.net) principals and using tools like Dotenv with Rails. Using SecondBase does not mean you have to abandon these best practices. You will however need to take advantage of a [new feature](https://github.com/rails/rails/pull/14633) in Rails 4.1 and upward that allows database.yml configurations to leverage a `:url` key that will resolve and merge the same connection string format consumed by `DATABASE_URL`. For example: 
 
@@ -150,6 +152,20 @@ secondbase:
 ```
 
 There are many ways to use Dotenv and enviornment variables. This is only one example and we hope it helps you decide on which is best for you.
+
+#### The ActiveRecord Query Cache
+
+Rails only knows about your base connection for the Rack-based query cache. In order to take advantage of this feature for your SecondBase, you will need to set an arround filter in your controller.
+
+```ruby
+class ApplicationController < ActionController::Base
+  around_filter :query_cache_secondBase
+  private
+  def query_cache_secondBase
+    SecondBase::Base.connection.cache { yield }
+  end
+end
+```
 
 
 ## Versions
