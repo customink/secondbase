@@ -108,7 +108,7 @@ end
 
 %w{
   create:all create drop:all purge:all purge
-  migrate abort_if_pending_migrations
+  migrate migrate:status abort_if_pending_migrations
   schema:load structure:load
   test:purge test:load_schema test:load_structure test:prepare
 }.each do |name|
