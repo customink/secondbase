@@ -17,10 +17,6 @@ namespace :db do
       end
     end
 
-    task :drop do
-      SecondBase.on_base { Rake::Task['db:drop'].execute }
-    end
-
     namespace :purge do
       task :all do
         SecondBase.on_base { Rake::Task['db:purge:all'].execute }
@@ -40,8 +36,6 @@ namespace :db do
       task :redo => ['db:load_config'] do
         SecondBase.on_base { Rake::Task['db:migrate:redo'].execute }
       end
-
-      task :reset => ['db:second_base:drop', 'db:second_base:create', 'db:second_base:migrate']
 
       task :up => ['db:load_config'] do
         SecondBase.on_base { Rake::Task['db:migrate:up'].execute }
@@ -113,7 +107,7 @@ namespace :db do
 end
 
 %w{
-  create:all create drop drop:all purge:all purge
+  create:all create drop:all purge:all purge
   migrate abort_if_pending_migrations
   schema:load structure:load
   test:purge test:load_schema test:load_structure test:prepare
