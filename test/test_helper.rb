@@ -7,7 +7,7 @@ require 'active_support/test_case'
 require 'active_support/testing/autorun'
 
 if Rails.version.to_i == 4
-  require 'dummy_app/rails_four/init'
+  require 'dummy_apps/rails_four/init'
 else
   require 'dummy_apps/rails_five/init'
 end

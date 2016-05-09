@@ -43,8 +43,7 @@ class DbTaskTest < SecondBase::TestCase
     assert_dummy_databases
     run_db 'purge:all'
     establish_connection
-    assert_equal [], ActiveRecord::Base.connection.data_sources
-    assert_equal [], SecondBase::Base.connection.data_sources
+    assert_no_tables
   end
 
   def test_db_purge
@@ -54,8 +53,7 @@ class DbTaskTest < SecondBase::TestCase
     assert_dummy_databases
     run_db :purge
     establish_connection
-    assert_equal [], ActiveRecord::Base.connection.data_sources
-    assert_equal [], SecondBase::Base.connection.data_sources
+    assert_no_tables
   end
 
   def test_db_migrate
@@ -164,8 +162,7 @@ class DbTaskTest < SecondBase::TestCase
     assert_dummy_databases
     run_db 'test:purge'
     establish_connection
-    assert_equal [], ActiveRecord::Base.connection.data_sources
-    assert_equal [], SecondBase::Base.connection.data_sources
+    assert_no_tables
   end
 
   def test_db_test_load_schema
@@ -213,9 +210,25 @@ class DbTaskTest < SecondBase::TestCase
 
   private
 
+  def assert_no_tables
+    if ActiveRecord::Base.connection.respond_to? :data_sources
+      assert_equal [], ActiveRecord::Base.connection.data_sources
+      assert_equal [], SecondBase::Base.connection.data_sources
+    else
+      assert_equal [], ActiveRecord::Base.connection.tables
+      assert_equal [], SecondBase::Base.connection.tables
+    end
+  end
+
   def assert_connection_tables(model, expected_tables)
     establish_connection
-    tables = model.connection.data_sources
+
+    if ActiveRecord::Base.connection.respond_to? :data_sources
+      tables = model.connection.data_sources
+    else
+      tables = model.connection.tables
+    end
+
     expected_tables.each do |table|
       message = "Expected #{model.name} tables #{tables.inspect} to include #{table.inspect}"
       assert tables.include?(table), message
