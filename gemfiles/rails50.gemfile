@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "terminal-notifier-guard"
 gem "rails", "~> 5.0.0.rc1"
+gem "mysql2"
 
 gemspec :path => "../"

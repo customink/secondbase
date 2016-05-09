@@ -41,7 +41,11 @@ module SecondBase
       @dummy_migration ||= begin
         vers = Time.now.utc.strftime '%Y%m%d%H%M%S'
         file = dummy_root.join 'db', 'secondbase', 'migrate', "#{vers}_create_foos.rb"
-        migr = %|class CreateFoos < ActiveRecord::Migration ; def change ; create_table(:foos) ; end ; end|
+        if rails_50_up?
+          migr = %|class CreateFoos < ActiveRecord::Migration[4.2] ; def change ; create_table(:foos) ; end ; end|
+        else
+          migr = %|class CreateFoos < ActiveRecord::Migration ; def change ; create_table(:foos) ; end ; end|
+        end
         File.open(file,'w') { |f| f.write(migr) }
         {version: vers, file: file}
       end
@@ -52,7 +56,7 @@ module SecondBase
       FileUtils.rm_rf dummy_secondbase_schema
       Dir.chdir(dummy_db) { Dir['**/structure.sql'].each { |structure| FileUtils.rm_rf(structure) } }
       Dir.chdir(dummy_db) { FileUtils.rm_rf(dummy_database_sqlite) } if dummy_database_sqlite
-      FileUtils.rm_rf(dummy_migration[:file]) if @dummy_migration
+      FileUtils.rm_rf(dummy_migration[:file]) if defined?(@dummy_migration) && @dummy_migration
       `mysql -uroot -e "DROP DATABASE IF EXISTS secondbase_test"`
     end
 
