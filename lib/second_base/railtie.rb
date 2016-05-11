@@ -12,6 +12,13 @@ module SecondBase
 
     rake_tasks do
       load 'second_base/databases.rake'
+      
+      if Rails.version.to_i == 4
+        load 'second_base/databases_rails_four.rake'
+      else
+        load 'second_base/databases_rails_five.rake'
+      end
+
     end
 
     generators do

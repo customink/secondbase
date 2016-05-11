@@ -43,8 +43,7 @@ class DbTaskTest < SecondBase::TestCase
     assert_dummy_databases
     run_db 'purge:all'
     establish_connection
-    assert_equal [], ActiveRecord::Base.connection.tables
-    assert_equal [], SecondBase::Base.connection.tables
+    assert_no_tables
   end
 
   def test_db_purge
@@ -54,8 +53,7 @@ class DbTaskTest < SecondBase::TestCase
     assert_dummy_databases
     run_db :purge
     establish_connection
-    assert_equal [], ActiveRecord::Base.connection.tables
-    assert_equal [], SecondBase::Base.connection.tables
+    assert_no_tables
   end
 
   def test_db_migrate
@@ -80,12 +78,12 @@ class DbTaskTest < SecondBase::TestCase
   def test_secondbase_migrate_updown
     run_db :create
     run_db :migrate
-    assert_match /no migration.*20151202075826/i, run_db('migrate:down VERSION=20151202075826', :stderr)
+    assert_match(/no migration.*20151202075826/i, run_db('migrate:down VERSION=20151202075826', :stderr))
     run_secondbase 'migrate:down VERSION=20151202075826'
     secondbase_schema = File.read(dummy_secondbase_schema)
     refute_match %r{version: 20151202075826}, secondbase_schema
     refute_match %r{create_table "comments"}, secondbase_schema
-    assert_match /no migration.*20151202075826/i, run_db('migrate:up VERSION=20151202075826', :stderr)
+    assert_match(/no migration.*20151202075826/i, run_db('migrate:up VERSION=20151202075826', :stderr))
     run_secondbase 'migrate:up VERSION=20151202075826'
     secondbase_schema = File.read(dummy_secondbase_schema)
     assert_match %r{version: 20151202075826}, secondbase_schema
@@ -164,8 +162,7 @@ class DbTaskTest < SecondBase::TestCase
     assert_dummy_databases
     run_db 'test:purge'
     establish_connection
-    assert_equal [], ActiveRecord::Base.connection.tables
-    assert_equal [], SecondBase::Base.connection.tables
+    assert_no_tables
   end
 
   def test_db_test_load_schema
@@ -186,8 +183,8 @@ class DbTaskTest < SecondBase::TestCase
     version = dummy_migration[:version]
     capture(:stderr) do
       stdout = run_db :abort_if_pending_migrations
-      assert_match /1 pending migration/, stdout
-      assert_match /#{version}/, stdout
+      assert_match(/1 pending migration/, stdout)
+      assert_match(/#{version}/, stdout)
     end
   end
 
@@ -204,18 +201,34 @@ class DbTaskTest < SecondBase::TestCase
 
   def test_secondbase_version
     run_db :create
-    assert_match /version: 0/, run_secondbase(:version)
+    assert_match(/version: 0/, run_secondbase(:version))
     run_db :migrate
-    assert_match /version: 20141214142700/, run_db(:version)
-    assert_match /version: 20151202075826/, run_secondbase(:version)
+    assert_match(/version: 20141214142700/, run_db(:version))
+    assert_match(/version: 20151202075826/, run_secondbase(:version))
   end
 
 
   private
 
+  def assert_no_tables
+    if ActiveRecord::Base.connection.respond_to? :data_sources
+      assert_equal [], ActiveRecord::Base.connection.data_sources
+      assert_equal [], SecondBase::Base.connection.data_sources
+    else
+      assert_equal [], ActiveRecord::Base.connection.tables
+      assert_equal [], SecondBase::Base.connection.tables
+    end
+  end
+
   def assert_connection_tables(model, expected_tables)
     establish_connection
-    tables = model.connection.tables
+
+    if ActiveRecord::Base.connection.respond_to? :data_sources
+      tables = model.connection.data_sources
+    else
+      tables = model.connection.tables
+    end
+
     expected_tables.each do |table|
       message = "Expected #{model.name} tables #{tables.inspect} to include #{table.inspect}"
       assert tables.include?(table), message

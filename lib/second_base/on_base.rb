@@ -16,7 +16,7 @@ module SecondBase
     ActiveRecord::Tasks::DatabaseTasks.current_config = config
     ActiveRecord::Base.configurations = original_configurations[Railtie.config_key]
     ActiveRecord::Base.establish_connection(config)
-    ActiveRecord::Tasks::DatabaseTasks.migrations_paths = SecondBase::Railtie.fullpath('migrate')
+    ActiveRecord::Tasks::DatabaseTasks.migrations_paths = [SecondBase::Railtie.fullpath('migrate')]
     ActiveRecord::Tasks::DatabaseTasks.db_dir = SecondBase::Railtie.fullpath
     ActiveRecord::Migrator.migrations_paths = ActiveRecord::Tasks::DatabaseTasks.migrations_paths
     self.is_on_base = true

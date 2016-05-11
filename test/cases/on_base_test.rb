@@ -13,7 +13,7 @@ class OnBaseTest < SecondBase::TestCase
     SecondBase.on_base do
       assert SecondBase.is_on_base
       assert_equal SecondBase::Base.connection.class, ActiveRecord::Base.connection.class
-      assert_equal SecondBase::Railtie.fullpath('migrate'), ActiveRecord::Tasks::DatabaseTasks.migrations_paths
+      assert_equal [SecondBase::Railtie.fullpath('migrate')], ActiveRecord::Tasks::DatabaseTasks.migrations_paths
       assert_equal SecondBase::Railtie.fullpath, ActiveRecord::Tasks::DatabaseTasks.db_dir
     end
     refute SecondBase.is_on_base
