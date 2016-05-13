@@ -66,9 +66,9 @@ module SecondBase
       'rake'
     end
 
-    def run_db(args, stream=:stdout)
+    def run_db(args, stream=:stdout, with_secondbase_tasks=true)
       capture(stream) do
-        Dir.chdir(dummy_root) { Kernel.system "#{run_cmd} db:#{args}" }
+        Dir.chdir(dummy_root) { Kernel.system "env WITH_SECONDBASE_TASKS=#{with_secondbase_tasks} #{run_cmd} db:#{args}" }
       end
     end
 

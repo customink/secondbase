@@ -207,8 +207,18 @@ class DbTaskTest < SecondBase::TestCase
     assert_match(/version: 20151202075826/, run_secondbase(:version))
   end
 
+  def test_no_db_tasks
+    refute_dummy_databases
+    run_db :create, :stdin, false
+    assert_dummy_created_but_not_secondbase
+  end
 
   private
+
+  def assert_dummy_created_but_not_secondbase
+    assert_equal 'base.sqlite3', dummy_database_sqlite
+    refute_match(/secondbase_test/, `mysql -uroot -e "SHOW DATABASES"`)
+  end
 
   def assert_no_tables
     if ActiveRecord::Base.connection.respond_to? :data_sources
