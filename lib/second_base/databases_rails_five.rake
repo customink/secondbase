@@ -14,7 +14,7 @@ end
   drop:_unsafe
 }.each do |name|
   task = Rake::Task["db:#{name}"] rescue nil
-  next unless task
+  next unless task && SecondBase::Railtie.run_with_db_rake_tasks?
   task.enhance do
     Rake::Task["db:load_config"].invoke
     Rake::Task["db:second_base:#{name}"].invoke
