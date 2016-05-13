@@ -4,6 +4,7 @@ module SecondBase
     config.second_base = ActiveSupport::OrderedOptions.new
     config.second_base.path = 'db/secondbase'
     config.second_base.config_key = 'secondbase'
+    config.second_base.run_with_db_tasks = true
 
     config.after_initialize do |app|
       secondbase_dir = app.root.join(config.second_base.path)
@@ -36,6 +37,10 @@ module SecondBase
 
     def config_key
       config.second_base.config_key
+    end
+
+    def run_with_db_tasks?
+      config.second_base.run_with_db_tasks
     end
 
     def fullpath(extra=nil)
