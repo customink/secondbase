@@ -33,7 +33,9 @@ module Dummy
 
     config.active_record.schema_format = ENV['SCHEMA_FORMAT'] ? :sql : :ruby
 
-
+    if ENV['WITH_SECONDBASE_TASKS'].present?
+      config.second_base.run_with_db_tasks = ENV['WITH_SECONDBASE_TASKS'] == 'true'
+    end
   end
 end
 

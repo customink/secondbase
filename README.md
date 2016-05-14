@@ -34,7 +34,7 @@ secondbase:
 
 #### Database Tasks
 
-SecondBase aims to work seamlessly within your Rails application. When it makes sense, we run a mirrored `db:second_base` task for matching ActiveRecord base database task. For example:
+SecondBase aims to work seamlessly within your Rails application. When it makes sense, we run a mirrored `db:second_base` task for matching ActiveRecord base database task. These can all be deactivated by setting `config.second_base.run_with_db_tasks = false` in your Application's configuration. For example:
 
 ```shell
 $ rake db:create
