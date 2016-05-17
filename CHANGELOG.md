@@ -3,6 +3,14 @@
 
 Please follow the format set down in http://keepachangelog.com
 
+## 2.1.0
+
+Added the ability to disable the database task patching (thanks [@agrberg](https://github.com/agrberg))
+
+## 2.0.0
+
+Added Rails 5 support.
+
 ## v1.0.1
 
 #### Fixed
