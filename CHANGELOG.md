@@ -1,7 +1,10 @@
-
 # Change Log
 
 Please follow the format set down in http://keepachangelog.com
+
+## 2.1.1
+
+Test updates to track rails 5 rc2.
 
 ## 2.1.0
 
