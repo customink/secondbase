@@ -113,7 +113,7 @@ require 'second_base/test_help'
 
 #### Configurations
 
-All SecondBase railtie settings are best done in a `config/initializers/secondbase.rb` file. We support the following configurations:
+All SecondBase railtie settings are best done in a `config/application.rb` file. We support the following configurations:
 
 ```ruby
 config.second_base.path        # Default: 'db/secondbase'
