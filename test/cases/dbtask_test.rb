@@ -176,6 +176,21 @@ class DbTaskTest < SecondBase::TestCase
     assert_connection_tables SecondBase::Base, ['comments']
   end
 
+  def test_db_test_schema_cache_dump_xxx
+    run_db :create
+    run_db :migrate
+    assert_dummy_databases
+    Dir.chdir(dummy_root) { `rake db:schema:cache:dump` }
+    assert File.file?(dummy_schema_cache), 'dummy schema cache does not exist'
+    assert File.file?(dummy_secondbase_schema_cache), 'dummy secondbase schema cache does not exist'
+    cache1 = Marshal.load(File.binread(dummy_schema_cache))
+    cache2 = Marshal.load(File.binread(dummy_secondbase_schema_cache))
+    assert cache1.data_sources('posts'),    'base should have posts table in cache'
+    refute cache1.data_sources('comments'), 'base should not have comments table in cache'
+    refute cache2.data_sources('posts'),    'secondbase should not have posts table in cache'
+    assert cache2.data_sources('comments'), 'secondbase should have comments table in cache'
+  end
+
   def test_abort_if_pending
     run_db :create
     run_db :migrate

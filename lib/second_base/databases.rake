@@ -73,6 +73,14 @@ namespace :db do
         SecondBase.on_base { Rake::Task['db:schema:load'].execute }
       end
 
+      namespace :cache do
+
+        task :dump do
+          SecondBase.on_base { Rake::Task['db:schema:cache:dump'].execute }
+        end
+
+      end
+
     end
 
     namespace :structure do
@@ -109,7 +117,7 @@ end
 %w{
   create:all create drop:all purge:all purge
   migrate migrate:status abort_if_pending_migrations
-  schema:load structure:load
+  schema:load schema:cache:dump structure:load
   test:purge test:load_schema test:load_structure test:prepare
 }.each do |name|
   task = Rake::Task["db:#{name}"] rescue nil

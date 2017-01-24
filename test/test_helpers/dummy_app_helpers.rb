@@ -29,8 +29,16 @@ module SecondBase
       dummy_db.join 'schema.rb'
     end
 
+    def dummy_schema_cache
+      dummy_db.join 'schema_cache.dump'
+    end
+
     def dummy_secondbase_schema
       dummy_db.join('secondbase', 'schema.rb')
+    end
+
+    def dummy_secondbase_schema_cache
+      dummy_db.join('secondbase', 'schema_cache.dump')
     end
 
     def dummy_database_sqlite

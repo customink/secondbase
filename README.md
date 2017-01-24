@@ -51,6 +51,7 @@ This will not only create your base development database, but it will also creat
 * db:migrate
 * db:test:purge
 * db:test:prepare
+* db:schema:cache:dump
 
 Not all base database tasks make sense to run a mirrored SecondBase task. These include tasks that move a single migration up/down, reporting on your database's current status/version, and others. These tasks have to be run explicitly and only operate on your SecondBase database. Each support any feature that their matching `:db` task has. For example, using `VERSION=123` to target a specific migration.
 
@@ -163,6 +164,22 @@ class ApplicationController < ActionController::Base
   private
   def query_cache_secondBase
     SecondBase::Base.connection.cache { yield }
+  end
+end
+```
+
+#### The Schema Cache
+
+The ActiveRecord schema cache can serialize your database's structure to avoid complex reflection SQL. Read more in about it in the [Rails feature that you've never heard about: schema cache](http://blog.iempire.ru/2016/12/13/schema-cache/) article. Second base supports this by automatically dumping the SecondBase cache into the `db/secondbase` directory. However, in order to load this file if present, you will need to create a Rails initializer that loads this file. For example:
+
+```ruby
+# In config/initializers/second_base.rb
+Rails.application.configure do
+  use_cache  = config.active_record.use_schema_cache_dump
+  cache_file = Rails.root.join(config.second_base.path, 'schema_cache.dump')
+  if use_cache && File.file?(cache_file)
+    cache = Marshal.load File.binread(cache_file)
+    SecondBase::Base.connection.schema_cache = cache
   end
 end
 ```
