@@ -170,7 +170,7 @@ end
 
 #### The Schema Cache
 
-The ActiveRecord schema cache can serialize your database's structure to avoid complex reflection SQL. Read more in about it in the [Rails feature that you've never heard about: schema cache](http://blog.iempire.ru/2016/12/13/schema-cache/) article. Second base supports this by automatically dumping the SecondBase cache into the `db/secondbase` directory. However, in order to load this file if present, you will need to create a Rails initializer that loads this file. For example:
+The ActiveRecord schema cache can serialize your database's structure to avoid complex reflection SQL. Read more about it in this *[Rails feature that you've never heard about: schema cache](http://blog.iempire.ru/2016/12/13/schema-cache/)* article. SecondBase supports this by automatically dumping the SecondBase cache into the `db/secondbase` directory. However, in order to load this file if present, you will need to create a Rails initializer that loads this file. For example:
 
 ```ruby
 # In config/initializers/second_base.rb
