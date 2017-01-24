@@ -176,7 +176,7 @@ class DbTaskTest < SecondBase::TestCase
     assert_connection_tables SecondBase::Base, ['comments']
   end
 
-  def test_db_test_schema_cache_dump_xxx
+  def test_db_test_schema_cache_dump
     run_db :create
     run_db :migrate
     assert_dummy_databases
