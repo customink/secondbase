@@ -2,17 +2,37 @@
 
 Please follow the format set down in http://keepachangelog.com
 
-## 2.1.1
+## v2.1.2
 
-Test updates to track rails 5 rc2.
+#### Changed
 
-## 2.1.0
+* Tested w Rails 5.0 release.
 
-Added the ability to disable the database task patching (thanks [@agrberg](https://github.com/agrberg))
+#### Added
 
-## 2.0.0
+* Support for schema cache. Fixes #40
 
-Added Rails 5 support.
+
+## v2.1.1
+
+#### Changed
+
+* Test updates to track rails 5 rc2.
+
+
+## v2.1.0
+
+#### Added
+
+* Ability to disable the database task patching (thanks [@agrberg](https://github.com/agrberg))
+
+
+## v2.0.0
+
+#### Added
+
+* Rails 5 support.
+
 
 ## v1.0.1
 
