@@ -29,8 +29,16 @@ module SecondBase
       dummy_db.join 'schema.rb'
     end
 
+    def dummy_schema_cache
+      dummy_db.join 'schema_cache.dump'
+    end
+
     def dummy_secondbase_schema
       dummy_db.join('secondbase', 'schema.rb')
+    end
+
+    def dummy_secondbase_schema_cache
+      dummy_db.join('secondbase', 'schema_cache.dump')
     end
 
     def dummy_database_sqlite
@@ -54,6 +62,8 @@ module SecondBase
     def delete_dummy_files
       FileUtils.rm_rf dummy_schema
       FileUtils.rm_rf dummy_secondbase_schema
+      FileUtils.rm_rf dummy_schema_cache
+      FileUtils.rm_rf dummy_secondbase_schema_cache
       Dir.chdir(dummy_db) { Dir['**/structure.sql'].each { |structure| FileUtils.rm_rf(structure) } }
       Dir.chdir(dummy_db) { FileUtils.rm_rf(dummy_database_sqlite) } if dummy_database_sqlite
       FileUtils.rm_rf(dummy_migration[:file]) if defined?(@dummy_migration) && @dummy_migration

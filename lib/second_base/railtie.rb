@@ -31,6 +31,15 @@ module SecondBase
       config.watchable_files.concat ["#{secondbase_dir}/schema.rb", "#{secondbase_dir}/structure.sql"]
     end
 
+    initializer 'second_base.check_schema_cache_dump', after: 'active_record.check_schema_cache_dump' do |app|
+      use_cache  = config.active_record.use_schema_cache_dump
+      cache_file = app.root.join(config.second_base.path, 'schema_cache.dump')
+      if use_cache && File.file?(cache_file)
+        cache = Marshal.load File.binread(cache_file)
+        SecondBase::Base.connection.schema_cache = cache
+      end
+    end
+
     def config_path
       config.second_base.path
     end

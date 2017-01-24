@@ -51,6 +51,7 @@ This will not only create your base development database, but it will also creat
 * db:migrate
 * db:test:purge
 * db:test:prepare
+* db:schema:cache:dump
 
 Not all base database tasks make sense to run a mirrored SecondBase task. These include tasks that move a single migration up/down, reporting on your database's current status/version, and others. These tasks have to be run explicitly and only operate on your SecondBase database. Each support any feature that their matching `:db` task has. For example, using `VERSION=123` to target a specific migration.
 
@@ -166,7 +167,6 @@ class ApplicationController < ActionController::Base
   end
 end
 ```
-
 
 ## Versions
 
