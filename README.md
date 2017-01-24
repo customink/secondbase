@@ -168,23 +168,6 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-#### The Schema Cache
-
-The ActiveRecord schema cache can serialize your database's structure to avoid complex reflection SQL. Read more about it in this *[Rails feature that you've never heard about: schema cache](http://blog.iempire.ru/2016/12/13/schema-cache/)* article. SecondBase supports this by automatically dumping the SecondBase cache into the `db/secondbase` directory. However, in order to load this file if present, you will need to create a Rails initializer that loads this file. For example:
-
-```ruby
-# In config/initializers/second_base.rb
-Rails.application.configure do
-  use_cache  = config.active_record.use_schema_cache_dump
-  cache_file = Rails.root.join(config.second_base.path, 'schema_cache.dump')
-  if use_cache && File.file?(cache_file)
-    cache = Marshal.load File.binread(cache_file)
-    SecondBase::Base.connection.schema_cache = cache
-  end
-end
-```
-
-
 ## Versions
 
 The current master branch is for Rails v4.0.0 and up and. We have older work in previous v1.0 releases which partial work for Rails 3.2 or lower. These old versions are feature incomplete and are not supported.
