@@ -27,7 +27,7 @@ namespace :db do
       SecondBase.on_base { Rake::Task['db:purge'].execute }
     end
 
-    task :migrate do
+    task :migrate => ['db:load_config'] do
       SecondBase.on_base { Rake::Task['db:migrate'].execute }
     end
 
