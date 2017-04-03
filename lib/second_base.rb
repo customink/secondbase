@@ -13,8 +13,12 @@ module SecondBase
   autoload :Base
 
   def self.config(env = nil)
-    config = ActiveRecord::Base.configurations[Railtie.config_key]
-    config ? config[env || Rails.env] : nil
+    if ENV['SECONDBASE_DATABASE_URL'].present?
+      ENV['SECONDBASE_DATABASE_URL']
+    else
+      config = ActiveRecord::Base.configurations[Railtie.config_key]
+      config ? config[env || Rails.env] : nil
+    end
   end
 
 end
