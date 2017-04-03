@@ -2,6 +2,13 @@
 
 Please follow the format set down in http://keepachangelog.com
 
+## v2.1.3
+
+#### Fixed
+
+* Issue with explicit secondbase tasks not loading config. Fixes #43
+
+
 ## v2.1.2
 
 #### Changed
