@@ -2,32 +2,32 @@ namespace :db do
   namespace :second_base do
 
     namespace :create do
-      task :all do
+      task :all => ['db:load_config'] do
         SecondBase.on_base { Rake::Task['db:create:all'].execute }
       end
     end
 
-    task :create do
+    task :create => ['db:load_config'] do
       SecondBase.on_base { Rake::Task['db:create'].execute }
     end
 
     namespace :drop do
-      task :all do
+      task :all => ['db:load_config']  do
         SecondBase.on_base { Rake::Task['db:drop:all'].execute }
       end
     end
 
     namespace :purge do
-      task :all do
+      task :all => ['db:load_config'] do
         SecondBase.on_base { Rake::Task['db:purge:all'].execute }
       end
     end
 
-    task :purge do
+    task :purge => ['db:load_config'] do
       SecondBase.on_base { Rake::Task['db:purge'].execute }
     end
 
-    task :migrate do
+    task :migrate => ['db:load_config'] do
       SecondBase.on_base { Rake::Task['db:migrate'].execute }
     end
 
@@ -69,13 +69,13 @@ namespace :db do
 
     namespace :schema do
 
-      task :load do
+      task :load => ['db:load_config'] do
         SecondBase.on_base { Rake::Task['db:schema:load'].execute }
       end
 
       namespace :cache do
 
-        task :dump do
+        task :dump => ['db:load_config'] do
           SecondBase.on_base { Rake::Task['db:schema:cache:dump'].execute }
         end
 
@@ -85,7 +85,7 @@ namespace :db do
 
     namespace :structure do
 
-      task :load do
+      task :load => ['db:load_config'] do
         SecondBase.on_base { Rake::Task['db:structure:load'].execute }
       end
 
@@ -93,19 +93,19 @@ namespace :db do
 
     namespace :test do
 
-      task :purge do
+      task :purge => ['db:load_config'] do
         SecondBase.on_base { Rake::Task['db:test:purge'].execute }
       end
 
-      task :load_schema do
+      task :load_schema => ['db:load_config'] do
         SecondBase.on_base { Rake::Task['db:test:load_schema'].execute }
       end
 
-      task :load_structure do
+      task :load_structure => ['db:load_config'] do
         SecondBase.on_base { Rake::Task['db:test:load_structure'].execute }
       end
 
-      task :prepare do
+      task :prepare => ['db:load_config'] do
         SecondBase.on_base { Rake::Task['db:test:prepare'].execute }
       end
 
