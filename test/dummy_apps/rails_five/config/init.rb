@@ -1,5 +1,5 @@
 ENV['RAILS_ENV'] ||= 'test'
-ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../../Gemfile', __FILE__)
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../../../Gemfile', __FILE__)
 require 'bundler/setup'
 require 'rails/all'
 Bundler.require(:default, Rails.env)
@@ -8,7 +8,7 @@ module Dummy
   class Application < ::Rails::Application
 
     # Basic Engine
-    config.root = File.join __FILE__, '..'
+    config.root = File.join __FILE__, '..', '..'
     config.cache_store = :memory_store
     config.assets.enabled = false
     config.secret_token = '012345678901234567890123456789'

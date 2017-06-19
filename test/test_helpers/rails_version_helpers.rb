@@ -11,7 +11,7 @@ module SecondBase
       Rails.version.to(2)
     end
 
-    ['4.0', '4.1', '4.2', '5.0'].each do |v|
+    ['4.0', '4.1', '4.2', '5.0', '5.1'].each do |v|
 
       vm = v.sub '.', ''
 
