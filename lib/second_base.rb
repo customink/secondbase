@@ -13,7 +13,7 @@ module SecondBase
   autoload :Base
 
   def self.config(env = nil)
-    config = ActiveRecord::Base.configurations[Railtie.config_key]
+    config = Rails.application.config.database_configuration[Railtie.config_key]
     config ? config[env || Rails.env] : nil
   end
 
