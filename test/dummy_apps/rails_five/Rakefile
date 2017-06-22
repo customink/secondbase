@@ -1,2 +1,2 @@
-require_relative File.expand_path '../config/init', __FILE__
+require_relative 'config/init'
 Dummy::Application.load_tasks
