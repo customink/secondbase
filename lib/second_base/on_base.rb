@@ -10,7 +10,7 @@ module SecondBase
       return
     end
     original_config = ActiveRecord::Tasks::DatabaseTasks.current_config
-    original_configurations = ActiveRecord::Base.configurations
+    original_configurations = Rails.application.config.database_configuration
     original_migrations_path = ActiveRecord::Tasks::DatabaseTasks.migrations_paths
     original_db_dir = ActiveRecord::Tasks::DatabaseTasks.db_dir
     ActiveRecord::Tasks::DatabaseTasks.current_config = config

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-APP_PATH = File.expand_path('../../init',  __FILE__)
+APP_PATH = File.expand_path('../../config/init',  __FILE__)
 require APP_PATH
 require 'rails/commands'
