@@ -2,6 +2,11 @@
 
 Please follow the format set down in http://keepachangelog.com
 
+## v2.1.4
+
+* Rails v5.1 support.
+
+
 ## v2.1.3
 
 #### Fixed
