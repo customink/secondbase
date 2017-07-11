@@ -176,10 +176,20 @@ class DbTaskTest < SecondBase::TestCase
     assert_connection_tables SecondBase::Base, ['comments']
   end
 
-  def test_db_test_schema_cache_dump
-    # this is a bug in rails 5.1.1
-    return if Rails::VERSION::STRING.start_with?("5.1")
+  def test_db_test_load_schema_via_env
+    run_db :create
+    assert_dummy_databases
+    run_db 'test:purge'
+    Dir.chdir(dummy_root) { `env SCHEMA_FORMAT=ruby rake db:migrate` }
+    Dir.chdir(dummy_root) { `rake db:test:load_schema` }
+    establish_connection
+    assert_connection_tables ActiveRecord::Base, ['users', 'posts']
+    assert_connection_tables SecondBase::Base, ['comments']
+  end
 
+  def test_db_test_schema_cache_dump
+    # this is a bug in rails >5.1.1
+    return if Rails::VERSION::STRING.start_with?("5.1")
     run_db :create
     run_db :migrate
     assert_dummy_databases

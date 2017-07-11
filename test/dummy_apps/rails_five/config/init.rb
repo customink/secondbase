@@ -31,7 +31,7 @@ module Dummy
     # Keep pending test:prepare via pending migrations from running.
     config.active_record.maintain_test_schema = false if ActiveRecord::Base.respond_to?(:maintain_test_schema)
 
-    config.active_record.schema_format = ENV['SCHEMA_FORMAT'] ? :sql : :ruby
+    config.active_record.schema_format = (ENV['SCHEMA_FORMAT'] || :ruby).to_sym
 
     if ENV['WITH_SECONDBASE_TASKS'].present?
       config.second_base.run_with_db_tasks = ENV['WITH_SECONDBASE_TASKS'] == 'true'

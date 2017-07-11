@@ -1,0 +1,228 @@
+--- !ruby/object:ActiveRecord::ConnectionAdapters::SchemaCache
+columns:
+  ar_internal_metadata:
+  - &11 !ruby/object:ActiveRecord::ConnectionAdapters::MySQL::Column
+    name: key
+    table_name: ar_internal_metadata
+    sql_type_metadata: !ruby/marshalable:ActiveRecord::ConnectionAdapters::MySQL::TypeMetadata
+      :__v2__:
+      - :@type_metadata
+      - :@extra
+      ? - &1 !ruby/object:ActiveRecord::ConnectionAdapters::SqlTypeMetadata
+          sql_type: varchar(255)
+          type: :string
+          limit: 255
+          precision: 
+          scale: 
+        - ''
+      : *1
+    'null': false
+    default: 
+    default_function: 
+    collation: utf8_general_ci
+    comment: 
+  - &12 !ruby/object:ActiveRecord::ConnectionAdapters::MySQL::Column
+    name: value
+    table_name: ar_internal_metadata
+    sql_type_metadata: !ruby/marshalable:ActiveRecord::ConnectionAdapters::MySQL::TypeMetadata
+      :__v2__:
+      - :@type_metadata
+      - :@extra
+      ? - &2 !ruby/object:ActiveRecord::ConnectionAdapters::SqlTypeMetadata
+          sql_type: varchar(255)
+          type: :string
+          limit: 255
+          precision: 
+          scale: 
+        - ''
+      : *2
+    'null': true
+    default: 
+    default_function: 
+    collation: utf8_general_ci
+    comment: 
+  - &13 !ruby/object:ActiveRecord::ConnectionAdapters::MySQL::Column
+    name: created_at
+    table_name: ar_internal_metadata
+    sql_type_metadata: !ruby/marshalable:ActiveRecord::ConnectionAdapters::MySQL::TypeMetadata
+      :__v2__:
+      - :@type_metadata
+      - :@extra
+      ? - &3 !ruby/object:ActiveRecord::ConnectionAdapters::SqlTypeMetadata
+          sql_type: datetime
+          type: :datetime
+          limit: 
+          precision: 0
+          scale: 
+        - ''
+      : *3
+    'null': false
+    default: 
+    default_function: 
+    collation: 
+    comment: 
+  - &14 !ruby/object:ActiveRecord::ConnectionAdapters::MySQL::Column
+    name: updated_at
+    table_name: ar_internal_metadata
+    sql_type_metadata: !ruby/marshalable:ActiveRecord::ConnectionAdapters::MySQL::TypeMetadata
+      :__v2__:
+      - :@type_metadata
+      - :@extra
+      ? - &4 !ruby/object:ActiveRecord::ConnectionAdapters::SqlTypeMetadata
+          sql_type: datetime
+          type: :datetime
+          limit: 
+          precision: 0
+          scale: 
+        - ''
+      : *4
+    'null': false
+    default: 
+    default_function: 
+    collation: 
+    comment: 
+  comments:
+  - &15 !ruby/object:ActiveRecord::ConnectionAdapters::MySQL::Column
+    name: id
+    table_name: comments
+    sql_type_metadata: !ruby/marshalable:ActiveRecord::ConnectionAdapters::MySQL::TypeMetadata
+      :__v2__:
+      - :@type_metadata
+      - :@extra
+      ? - &5 !ruby/object:ActiveRecord::ConnectionAdapters::SqlTypeMetadata
+          sql_type: int(11)
+          type: :integer
+          limit: 4
+          precision: 
+          scale: 
+        - auto_increment
+      : *5
+    'null': false
+    default: 
+    default_function: 
+    collation: 
+    comment: 
+  - &16 !ruby/object:ActiveRecord::ConnectionAdapters::MySQL::Column
+    name: body
+    table_name: comments
+    sql_type_metadata: !ruby/marshalable:ActiveRecord::ConnectionAdapters::MySQL::TypeMetadata
+      :__v2__:
+      - :@type_metadata
+      - :@extra
+      ? - &6 !ruby/object:ActiveRecord::ConnectionAdapters::SqlTypeMetadata
+          sql_type: text
+          type: :text
+          limit: 65535
+          precision: 
+          scale: 
+        - ''
+      : *6
+    'null': true
+    default: 
+    default_function: 
+    collation: utf8_general_ci
+    comment: 
+  - &17 !ruby/object:ActiveRecord::ConnectionAdapters::MySQL::Column
+    name: user_id
+    table_name: comments
+    sql_type_metadata: !ruby/marshalable:ActiveRecord::ConnectionAdapters::MySQL::TypeMetadata
+      :__v2__:
+      - :@type_metadata
+      - :@extra
+      ? - &7 !ruby/object:ActiveRecord::ConnectionAdapters::SqlTypeMetadata
+          sql_type: int(11)
+          type: :integer
+          limit: 4
+          precision: 
+          scale: 
+        - ''
+      : *7
+    'null': true
+    default: 
+    default_function: 
+    collation: 
+    comment: 
+  - &18 !ruby/object:ActiveRecord::ConnectionAdapters::MySQL::Column
+    name: created_at
+    table_name: comments
+    sql_type_metadata: !ruby/marshalable:ActiveRecord::ConnectionAdapters::MySQL::TypeMetadata
+      :__v2__:
+      - :@type_metadata
+      - :@extra
+      ? - &8 !ruby/object:ActiveRecord::ConnectionAdapters::SqlTypeMetadata
+          sql_type: datetime
+          type: :datetime
+          limit: 
+          precision: 0
+          scale: 
+        - ''
+      : *8
+    'null': false
+    default: 
+    default_function: 
+    collation: 
+    comment: 
+  - &19 !ruby/object:ActiveRecord::ConnectionAdapters::MySQL::Column
+    name: updated_at
+    table_name: comments
+    sql_type_metadata: !ruby/marshalable:ActiveRecord::ConnectionAdapters::MySQL::TypeMetadata
+      :__v2__:
+      - :@type_metadata
+      - :@extra
+      ? - &9 !ruby/object:ActiveRecord::ConnectionAdapters::SqlTypeMetadata
+          sql_type: datetime
+          type: :datetime
+          limit: 
+          precision: 0
+          scale: 
+        - ''
+      : *9
+    'null': false
+    default: 
+    default_function: 
+    collation: 
+    comment: 
+  schema_migrations:
+  - &20 !ruby/object:ActiveRecord::ConnectionAdapters::MySQL::Column
+    name: version
+    table_name: schema_migrations
+    sql_type_metadata: !ruby/marshalable:ActiveRecord::ConnectionAdapters::MySQL::TypeMetadata
+      :__v2__:
+      - :@type_metadata
+      - :@extra
+      ? - &10 !ruby/object:ActiveRecord::ConnectionAdapters::SqlTypeMetadata
+          sql_type: varchar(255)
+          type: :string
+          limit: 255
+          precision: 
+          scale: 
+        - ''
+      : *10
+    'null': false
+    default: 
+    default_function: 
+    collation: utf8_general_ci
+    comment: 
+columns_hash:
+  ar_internal_metadata:
+    key: *11
+    value: *12
+    created_at: *13
+    updated_at: *14
+  comments:
+    id: *15
+    body: *16
+    user_id: *17
+    created_at: *18
+    updated_at: *19
+  schema_migrations:
+    version: *20
+primary_keys:
+  ar_internal_metadata: key
+  comments: id
+  schema_migrations: version
+data_sources:
+  ar_internal_metadata: true
+  comments: true
+  schema_migrations: true
+version: 20151202075826
