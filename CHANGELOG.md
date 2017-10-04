@@ -2,6 +2,11 @@
 
 Please follow the format set down in http://keepachangelog.com
 
+## v2.1.5
+
+* Allow custom db paths to work. Fixes #51 #52. Thanks @MrJoy.
+
+
 ## v2.1.4
 
 * Rails v5.1 support.
