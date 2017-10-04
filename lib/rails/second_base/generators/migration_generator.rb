@@ -15,7 +15,12 @@ module SecondBase
     include(Module.new{
 
       def migration_template(*args)
-        args[1].sub! 'db/migrate', "#{Railtie.config_path}/migrate" if args[1]
+        path = Pathname
+               .new(Rails.application.config.paths['db/migrate'].first)
+               .relative_path_from(Rails.root)
+               .to_s
+
+        args[1].sub! path, "#{Railtie.config_path}/migrate" if args[1]
         super(*args)
       end
 
