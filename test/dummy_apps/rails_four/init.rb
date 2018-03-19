@@ -36,6 +36,10 @@ module Dummy
     if ENV['WITH_SECONDBASE_TASKS'].present?
       config.second_base.run_with_db_tasks = ENV['WITH_SECONDBASE_TASKS'] == 'true'
     end
+
+    if ENV['WITH_THIRDBASE_TASKS'].present?
+      config.third_base.run_with_db_tasks = ENV['WITH_THIRDBASE_TASKS'] == 'true'
+    end
   end
 end
 

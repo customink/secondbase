@@ -113,17 +113,3 @@ namespace :db do
 
   end
 end
-
-%w{
-  create:all create drop:all purge:all purge
-  migrate migrate:status abort_if_pending_migrations
-  schema:load schema:cache:dump structure:load
-  test:purge test:load_schema test:load_structure test:prepare
-}.each do |name|
-  task = Rake::Task["db:#{name}"] rescue nil
-  next unless task && SecondBase::Railtie.run_with_db_tasks?
-  task.enhance do
-    Rake::Task["db:load_config"].invoke
-    Rake::Task["db:second_base:#{name}"].invoke
-  end
-end

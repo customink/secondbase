@@ -52,6 +52,14 @@ module SecondBase
       config.second_base.run_with_db_tasks
     end
 
+    def paths
+      @paths ||= [fullpath('migrate')]
+    end
+
+    def paths=(val)
+      @paths = val
+    end
+
     def fullpath(extra=nil)
       path = Rails.root.join(config.second_base.path)
       (extra ? path.join(path, extra) : path).to_s

@@ -11,3 +11,11 @@ secondbase:
     username: root
     password:
     host: localhost
+thirdbase:
+
+  test:
+    adapter: mysql
+    database: 'thirdbase_test'
+    username: root
+    password:
+    host: localhost

@@ -1,46 +1,46 @@
 require 'test_helper'
 
-class DbTaskTest < SecondBase::TestCase
+class SecondBase::DbTaskTest < SecondBase::TestCase
 
   def test_db_create
-    refute_dummy_databases
+    refute_dummy_secondbase_databases
     run_db :create
-    assert_dummy_databases
+    assert_dummy_secondbase_databases
   end
 
   def test_db_create_all
-    refute_dummy_databases
+    refute_dummy_secondbase_databases
     run_db 'create:all'
-    assert_dummy_databases
+    assert_dummy_secondbase_databases
   end
 
   def test_db_setup
     run_db :create
     run_db :migrate
-    assert_dummy_databases
+    assert_dummy_secondbase_databases
     run_db :drop
-    refute_dummy_databases
+    refute_dummy_secondbase_databases
     run_db :setup
-    assert_dummy_databases
+    assert_dummy_secondbase_databases
   end
 
   def test_db_drop
     run_db :create
     run_db :drop
-    refute_dummy_databases
+    refute_dummy_secondbase_databases
   end
 
   def test_db_drop_all
     run_db :create
     run_db 'drop:all'
-    refute_dummy_databases
+    refute_dummy_secondbase_databases
   end
 
   def test_db_purge_all
     skip 'Rails 4.2 & Up' unless rails_42_up?
     run_db :create
     run_db :migrate
-    assert_dummy_databases
+    assert_dummy_secondbase_databases
     run_db 'purge:all'
     establish_connection
     assert_no_tables
@@ -50,7 +50,7 @@ class DbTaskTest < SecondBase::TestCase
     skip 'Rails 4.2 & Up' unless rails_42_up?
     run_db :create
     run_db :migrate
-    assert_dummy_databases
+    assert_dummy_secondbase_databases
     run_db :purge
     establish_connection
     assert_no_tables
@@ -115,7 +115,7 @@ class DbTaskTest < SecondBase::TestCase
     assert_match %r{version: 20151202075826}, secondbase_schema
     assert_match %r{create_table "comments"}, secondbase_schema
     # Can redo latest SecondBase migration using previous VERSION env.
-    version = dummy_migration[:version]
+    version = dummy_secondbase_migration[:version]
     run_db :migrate
     assert_match %r{version: #{version}}, File.read(dummy_secondbase_schema)
     establish_connection
@@ -134,7 +134,7 @@ class DbTaskTest < SecondBase::TestCase
     assert_match %r{migrations table does not exist}, run_secondbase('migrate:status', stream)
     run_db :migrate
     assert_match %r{up.*20151202075826}, run_secondbase('migrate:status')
-    version = dummy_migration[:version]
+    version = dummy_secondbase_migration[:version]
     status = run_secondbase('migrate:status')
     assert_match %r{up.*20151202075826}, status
     assert_match %r{down.*#{version}}, status
@@ -146,7 +146,7 @@ class DbTaskTest < SecondBase::TestCase
     secondbase_schema = File.read(dummy_secondbase_schema)
     assert_match %r{version: 20151202075826}, secondbase_schema
     refute_match %r{create_table "foos"}, secondbase_schema
-    version = dummy_migration[:version] # ActiveRecord does not support start index 0.
+    version = dummy_secondbase_migration[:version] # ActiveRecord does not support start index 0.
     run_secondbase :forward
     secondbase_schema = File.read(dummy_secondbase_schema)
     assert_match %r{version: #{version}}, secondbase_schema
@@ -159,7 +159,7 @@ class DbTaskTest < SecondBase::TestCase
 
   def test_db_test_purge
     run_db :create
-    assert_dummy_databases
+    assert_dummy_secondbase_databases
     run_db 'test:purge'
     establish_connection
     assert_no_tables
@@ -167,7 +167,7 @@ class DbTaskTest < SecondBase::TestCase
 
   def test_db_test_load_schema
     run_db :create
-    assert_dummy_databases
+    assert_dummy_secondbase_databases
     run_db 'test:purge'
     run_db :migrate
     Dir.chdir(dummy_root) { `rake db:test:load_schema` }
@@ -178,7 +178,7 @@ class DbTaskTest < SecondBase::TestCase
 
   def test_db_test_load_schema_via_env
     run_db :create
-    assert_dummy_databases
+    assert_dummy_secondbase_databases
     run_db 'test:purge'
     Dir.chdir(dummy_root) { `env SCHEMA_FORMAT=ruby rake db:migrate` }
     Dir.chdir(dummy_root) { `rake db:test:load_schema` }
@@ -192,7 +192,7 @@ class DbTaskTest < SecondBase::TestCase
     return if Rails::VERSION::STRING.start_with?("5.1")
     run_db :create
     run_db :migrate
-    assert_dummy_databases
+    assert_dummy_secondbase_databases
     Dir.chdir(dummy_root) { `rake db:schema:cache:dump` }
     assert File.file?(dummy_schema_cache), 'dummy schema cache does not exist'
     assert File.file?(dummy_secondbase_schema_cache), 'dummy secondbase schema cache does not exist'
@@ -209,7 +209,7 @@ class DbTaskTest < SecondBase::TestCase
     run_db :create
     run_db :migrate
     assert_equal "", run_db(:abort_if_pending_migrations, :stderr)
-    version = dummy_migration[:version]
+    version = dummy_secondbase_migration[:version]
     capture(:stderr) do
       stdout = run_db :abort_if_pending_migrations
       assert_match(/1 pending migration/, stdout)
@@ -219,7 +219,7 @@ class DbTaskTest < SecondBase::TestCase
 
   def test_db_test_load_structure
     run_db :create
-    assert_dummy_databases
+    assert_dummy_secondbase_databases
     run_db 'test:purge'
     Dir.chdir(dummy_root) { `env SCHEMA_FORMAT=sql rake db:migrate` }
     Dir.chdir(dummy_root) { `rake db:test:load_structure` }
@@ -237,7 +237,7 @@ class DbTaskTest < SecondBase::TestCase
   end
 
   def test_secondbase_db_tasks_disabled
-    refute_dummy_databases
+    refute_dummy_secondbase_databases
     run_db :create, :stdout, false
     assert_dummy_created_but_not_secondbase
   end

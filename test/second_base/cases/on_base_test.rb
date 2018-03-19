@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class OnBaseTest < SecondBase::TestCase
+class SecondBase::OnBaseTest < SecondBase::TestCase
 
   setup do
     run_db :create
