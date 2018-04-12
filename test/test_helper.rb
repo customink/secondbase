@@ -3,6 +3,7 @@ ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
 require 'bundler/setup'
 Bundler.require :default, :development
 require 'second_base'
+require 'third_base'
 require 'active_support/test_case'
 require 'active_support/testing/autorun'
 
@@ -40,6 +41,34 @@ module SecondBase
       ActiveRecord::Base.connection
       SecondBase::Base.establish_connection(SecondBase.config)
       SecondBase::Base.connection
+    end
+
+  end
+end
+
+module ThirdBase
+  class TestCase < ActiveSupport::TestCase
+
+    if Rails.version.to_i == 4
+      self.use_transactional_fixtures = false
+    else
+      self.use_transactional_tests = false
+    end
+
+    include SecondBase::RailsVersionHelpers,
+            SecondBase::DummyAppHelpers,
+            SecondBase::StreamHelpers
+
+    setup    :delete_dummy_files
+    teardown :delete_dummy_files
+
+    private
+
+    def establish_connection
+      ActiveRecord::Base.establish_connection
+      ActiveRecord::Base.connection
+      ThirdBase::Base.establish_connection(ThirdBase.config)
+      ThirdBase::Base.connection
     end
 
   end

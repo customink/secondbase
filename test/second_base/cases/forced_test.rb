@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ForcedTest < SecondBase::TestCase
+class SecondBase::ForcedTest < SecondBase::TestCase
 
   setup do
     run_db :create

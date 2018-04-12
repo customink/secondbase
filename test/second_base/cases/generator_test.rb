@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class GeneratorTest < SecondBase::TestCase
+class SecondBase::GeneratorTest < SecondBase::TestCase
 
   teardown do
     generated_migration_delete

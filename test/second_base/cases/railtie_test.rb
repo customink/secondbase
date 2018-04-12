@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class RailtieTest < SecondBase::TestCase
+class SecondBase::RailtieTest < SecondBase::TestCase
 
   def test_config
     expected_path = 'db/secondbase'
