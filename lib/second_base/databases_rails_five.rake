@@ -5,6 +5,7 @@ namespace :db do
     end
 
     namespace :migrate do
+      desc 'Resets SecondBase database using your migrations for the current environment'
       task :reset => ['db:second_base:drop:_unsafe', 'db:second_base:create', 'db:second_base:migrate']
     end
   end
