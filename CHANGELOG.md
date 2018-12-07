@@ -2,6 +2,11 @@
 
 Please follow the format set down in http://keepachangelog.com
 
+## v2.1.6
+
+* Descriptions for Rake tasks. Fixes #60. Thanks @roolo.
+
+
 ## v2.1.5
 
 * Allow custom db paths to work. Fixes #51 #52. Thanks @MrJoy.
