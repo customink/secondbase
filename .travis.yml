@@ -10,7 +10,7 @@ gemfile:
   - gemfiles/rails50.gemfile
   - gemfiles/rails51.gemfile
 install:
-  - gem install bundler
+  - gem install bundler -v 1.17.3
   - bundle --version
   - bundle install
 script:
