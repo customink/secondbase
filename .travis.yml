@@ -3,6 +3,8 @@ cache: bundler
 rvm:
   - 2.3.8
   - 2.5.3
+services:
+  - mysql
 gemfile:
   - gemfiles/rails40.gemfile
   - gemfiles/rails41.gemfile
