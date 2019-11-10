@@ -12,6 +12,7 @@ gemfile:
   - gemfiles/rails50.gemfile
   - gemfiles/rails51.gemfile
 install:
+  - gem uninstall -aIx bundler
   - gem install bundler -v 1.17.3
   - bundle --version
   - bundle install
