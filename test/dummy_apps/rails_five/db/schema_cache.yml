@@ -77,7 +77,7 @@ columns:
     name: id
     table_name: users
     sql_type_metadata: !ruby/object:ActiveRecord::ConnectionAdapters::SqlTypeMetadata
-      sql_type: INTEGER
+      sql_type: integer
       type: :integer
       limit: 
       precision: 
@@ -148,7 +148,7 @@ columns:
     name: id
     table_name: posts
     sql_type_metadata: !ruby/object:ActiveRecord::ConnectionAdapters::SqlTypeMetadata
-      sql_type: INTEGER
+      sql_type: integer
       type: :integer
       limit: 
       precision: 

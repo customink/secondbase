@@ -61,14 +61,16 @@ class DbTaskTest < SecondBase::TestCase
     run_db :migrate
     # First database and schema.
     schema = File.read(dummy_schema)
-    assert_match %r{version: 20141214142700}, schema
+    expectedMatch = %r{version: #{schemaVersionByRailsVersion('20141214142700')}}
+    assert_match expectedMatch, schema
     assert_match %r{create_table "users"}, schema
     assert_match %r{create_table "posts"}, schema
     refute_match %r{create_table "comments"}, schema
     assert_connection_tables ActiveRecord::Base, ['users', 'posts']
     # Second database and schema.
     secondbase_schema = File.read(dummy_secondbase_schema)
-    assert_match %r{version: 20151202075826}, secondbase_schema
+    expectedMatch = %r{version: #{schemaVersionByRailsVersion('20151202075826')}}
+    assert_match secondbase_schema, secondbase_schema
     refute_match %r{create_table "users"}, secondbase_schema
     refute_match %r{create_table "posts"}, secondbase_schema
     assert_match %r{create_table "comments"}, secondbase_schema
@@ -86,7 +88,8 @@ class DbTaskTest < SecondBase::TestCase
     assert_match(/no migration.*20151202075826/i, run_db('migrate:up VERSION=20151202075826', :stderr))
     run_secondbase 'migrate:up VERSION=20151202075826'
     secondbase_schema = File.read(dummy_secondbase_schema)
-    assert_match %r{version: 20151202075826}, secondbase_schema
+    expectedMatch = %r{version: #{schemaVersionByRailsVersion('20151202075826')}}
+    assert_match expectedMatch, secondbase_schema
     assert_match %r{create_table "comments"}, secondbase_schema
   end
 
@@ -94,12 +97,13 @@ class DbTaskTest < SecondBase::TestCase
     run_db :create
     run_db :migrate
     secondbase_schema = File.read(dummy_secondbase_schema)
-    assert_match %r{version: 20151202075826}, secondbase_schema
+    expectedMatch = %r{version: #{schemaVersionByRailsVersion('20151202075826')}}
+    assert_match expectedMatch, secondbase_schema
     assert_match %r{create_table "comments"}, secondbase_schema
     FileUtils.rm_rf dummy_secondbase_schema
     run_secondbase 'migrate:reset'
     secondbase_schema = File.read(dummy_secondbase_schema)
-    assert_match %r{version: 20151202075826}, secondbase_schema
+    assert_match expectedMatch, secondbase_schema
     assert_match %r{create_table "comments"}, secondbase_schema
   end
 
@@ -107,22 +111,24 @@ class DbTaskTest < SecondBase::TestCase
     run_db :create
     run_db :migrate
     secondbase_schema = File.read(dummy_secondbase_schema)
-    assert_match %r{version: 20151202075826}, secondbase_schema
+    expectedMatch = %r{version: #{schemaVersionByRailsVersion('20151202075826')}}
+    assert_match expectedMatch, secondbase_schema
     assert_match %r{create_table "comments"}, secondbase_schema
     FileUtils.rm_rf dummy_secondbase_schema
     run_secondbase 'migrate:redo'
     secondbase_schema = File.read(dummy_secondbase_schema)
-    assert_match %r{version: 20151202075826}, secondbase_schema
+    assert_match expectedMatch, secondbase_schema
     assert_match %r{create_table "comments"}, secondbase_schema
     # Can redo latest SecondBase migration using previous VERSION env.
     version = dummy_migration[:version]
     run_db :migrate
-    assert_match %r{version: #{version}}, File.read(dummy_secondbase_schema)
+    expectedMatch = %r{version: #{schemaVersionByRailsVersion(version)}}
+    assert_match expectedMatch, File.read(dummy_secondbase_schema)
     establish_connection
     Comment.create! body: 'test', user_id: 420
     run_secondbase 'migrate:redo VERSION=20151202075826'
     secondbase_schema = File.read(dummy_secondbase_schema)
-    assert_match %r{version: #{version}}, secondbase_schema
+    assert_match expectedMatch, secondbase_schema
     assert_match %r{create_table "comments"}, secondbase_schema
     establish_connection
     assert_nil Comment.first
@@ -144,16 +150,17 @@ class DbTaskTest < SecondBase::TestCase
     run_db :create
     run_db :migrate
     secondbase_schema = File.read(dummy_secondbase_schema)
-    assert_match %r{version: 20151202075826}, secondbase_schema
+    expectedMatch = %r{version: #{schemaVersionByRailsVersion('20151202075826')}}
+    assert_match expectedMatch, secondbase_schema
     refute_match %r{create_table "foos"}, secondbase_schema
     version = dummy_migration[:version] # ActiveRecord does not support start index 0.
     run_secondbase :forward
     secondbase_schema = File.read(dummy_secondbase_schema)
-    assert_match %r{version: #{version}}, secondbase_schema
+    assert_match %r{version: #{schemaVersionByRailsVersion(version)}}, secondbase_schema
     assert_match %r{create_table "foos"}, secondbase_schema
     run_secondbase :rollback
     secondbase_schema = File.read(dummy_secondbase_schema)
-    assert_match %r{version: 20151202075826}, secondbase_schema
+    assert_match expectedMatch, secondbase_schema
     refute_match %r{create_table "foos"}, secondbase_schema
   end
 
@@ -189,7 +196,7 @@ class DbTaskTest < SecondBase::TestCase
 
   def test_db_test_schema_cache_dump
     # this is a bug in rails >5.1.1
-    return if Rails::VERSION::STRING.start_with?("5.1")
+    return if rails_51_up?
     run_db :create
     run_db :migrate
     assert_dummy_databases
@@ -208,6 +215,7 @@ class DbTaskTest < SecondBase::TestCase
   def test_abort_if_pending
     run_db :create
     run_db :migrate
+    # deprecation warning messages appears in 5.2, but no error
     assert_equal "", run_db(:abort_if_pending_migrations, :stderr)
     version = dummy_migration[:version]
     capture(:stderr) do
