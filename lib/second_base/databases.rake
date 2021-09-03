@@ -102,6 +102,11 @@ namespace :db do
         SecondBase.on_base { Rake::Task['db:structure:load'].execute }
       end
 
+      # desc 'Dumps the databases to structure.sql file'
+      task :dump => ['db:load_config'] do
+        SecondBase.on_base { Rake::Task['db:structure:dump'].execute }
+      end
+
     end
 
     namespace :test do
@@ -133,7 +138,7 @@ end
 %w{
   create:all create drop:all purge:all purge
   migrate migrate:status abort_if_pending_migrations
-  schema:load schema:cache:dump structure:load
+  schema:load schema:cache:dump structure:load structure:dump
   test:purge test:load_schema test:load_structure test:prepare
 }.each do |name|
   task = Rake::Task["db:#{name}"] rescue nil
