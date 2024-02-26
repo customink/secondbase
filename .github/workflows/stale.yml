@@ -1,0 +1,24 @@
+name: Bump/Close inactive PRs
+on:
+  schedule:
+    - cron: "0 5 * * *"
+
+jobs:
+  close-issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/stale@v5
+        with:
+          days-before-pr-stale: 30
+          days-before-pr-close: 90
+
+          stale-pr-label: "stale"
+          stale-pr-message: "This PR is open and inactive for 30 days. Merging PRs open after a long time is error-prone. Please proceed to merging or make a comment to keep it open. You can also prevent PRs from being tagged stale ot closed with 'keep-open' tag. If there is no activity in 90 days, this PR will be closed"
+          close-pr-message: "This PR was closed because it has been inactive for 90 days since being marked as stale."
+
+          exempt-pr-labels: "keep-open,dependabot,dependencies"
+
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
