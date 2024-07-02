@@ -6,13 +6,16 @@ Bundler.require(:default, Rails.env)
 
 module Dummy
   class Application < ::Rails::Application
-
     # Basic Engine
     config.root = File.join __FILE__, '..', '..'
     config.cache_store = :memory_store
     config.assets.enabled = false
-    config.secret_token = '012345678901234567890123456789'
+    secret_token = '012345678901234567890123456789'
+    Rails.version =~ /^5.2/ ? config.secret_key_base = secret_token : config.secret_token = secret_token
     config.active_support.test_order = :random
+
+    # https://apidock.com/rails/v5.2.3/ActiveRecord/ConnectionAdapters/SQLite3Adapter/represent_boolean_as_integer/class
+    config.active_record.sqlite3.represent_boolean_as_integer = true if Rails.version =~ /^5.2/
 
     # Mimic Test Environment Config.
     config.consider_all_requests_local = true
