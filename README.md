@@ -1,6 +1,10 @@
 [![Gem Version](https://badge.fury.io/rb/secondbase.png)](http://badge.fury.io/rb/secondbase)
 
+
+
 ## ⚠️ SecondBase - Deprecated for Rails 6+
+
+![SecondBase Logo](https://cloud.githubusercontent.com/assets/2381/12219457/5a5aab4e-b712-11e5-92e1-de6487aa0809.png)
 
 Note: This project is deprecated for Rails 6 and higher versions.
 SecondBase provided seamless second database integration for Rails applications prior to Rails 6. However, with the release of Rails 6.0, built-in support for multiple databases was introduced as a core feature. For current Rails versions, it is recommended to use the official multiple database support instead of this gem. For information on using multiple databases in Rails 6+, please refer to:
@@ -10,8 +14,6 @@ SecondBase provided seamless second database integration for Rails applications 
 
 If you're using Rails 5.x or earlier, you may still find SecondBase useful. However, we encourage upgrading to the latest Rails version to take advantage of native multiple database support and ongoing maintenance.
 
-![SecondBase Logo](https://cloud.githubusercontent.com/assets/2381/12219457/5a5aab4e-b712-11e5-92e1-de6487aa0809.png)
-<hr>
 Seamless second database integration for Rails. SecondBase provides support for Rails to manage dual databases by extending ActiveRecord tasks that create, migrate, and test your databases.
 * [Using SecondBase To Provide Some Level Of Sanity](http://technology.customink.com/blog/2016/01/10/two-headed-cat-using-secondbase-to-provide-some-level-of-sanity-in-a-two-database-rails-application/)
 
