@@ -26,6 +26,8 @@ To get started with your new second database, update your database.yml to includ
 
 ```yaml
 # Default configurations:
+[![Overall](https://img.shields.io/endpoint?style=flat&url=https://app.opslevel.com/api/service_level/l897S_Na5bhgeQ64k-v7DWp04edKuiSmexBbniu913g)](https://app.opslevel.com/services/secondbase/maturity-report)
+
 development:
   adapter: sqlserver
   database: myapp_development
@@ -198,4 +200,3 @@ If you want to run the tests for a specific Rails version, use one of the apprai
 ```shell
 $ bundle exec appraisal rails41 rake test
 ```
-
